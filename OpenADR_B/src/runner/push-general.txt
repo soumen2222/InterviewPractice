@@ -1,0 +1,10 @@
+testcases.push.registerparty.ven.N0_5020_TH_VTN_1 #register
+#
+# VTN
+#
+testcases.push.general.ven.G0_9010_TH_VTN
+#
+# VEN
+#
+# testcases.push.general.vtn.G0_9010_TH_VEN_1
+testcases.push.general.vtn.G0_9020_TH_VEN_1

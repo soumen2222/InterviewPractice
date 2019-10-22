@@ -1,0 +1,236 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+   http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.honeywell.GatewaySimulator</groupId>
+   <artifactId>GatewaySimulator</artifactId>
+   <packaging>war</packaging>
+   <version>8.0-SNAPSHOT</version>
+   <name>GatewaySimulator</name>
+   <url>http://maven.apache.org</url>
+   <properties>
+		<jbossHome>${env.JBOSS_HOME}</jbossHome>
+		<jbossServerConfig>${jbossHome}/standalone</jbossServerConfig>
+		<nexusBaseUrl>http://nexus.openadr.com/content
+		</nexusBaseUrl>
+		<nexusUrl>${nexusBaseUrl}/groups/public</nexusUrl>
+		<nexusDistributionUrl>${nexusBaseUrl}/repositories
+		</nexusDistributionUrl>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <org.richfaces.bom.version>4.3.3.Final</org.richfaces.bom.version>
+		<maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>		
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.richfaces</groupId>
+                <artifactId>richfaces-bom</artifactId>
+                <version>${org.richfaces.bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    	
+	<dependencies>
+	
+	<!-- <dependency>
+			<groupId>com.honeywell.dras.services.api</groupId>
+			<artifactId>dai</artifactId>
+			<version>8.1-SNAPSHOT</version>
+		</dependency>  -->
+		
+		<!-- <dependency>
+			<groupId>com.honeywell.dras.services.api</groupId>
+			<artifactId>dai</artifactId>
+			<version>8.1-SNAPSHOT</version>
+		</dependency> 
+		
+		<dependency>
+			<groupId>com.honeywell.dras.services</groupId>
+			<artifactId>util</artifactId>
+			<version>8.5-SNAPSHOT</version>
+		</dependency> 
+		
+		<dependency>
+			<groupId>com.honeywell.dras_api</groupId>
+			<artifactId>dras_api</artifactId>
+			<version>8.5-SNAPSHOT</version>
+		</dependency>-->
+		<dependency>
+            <groupId>com.honeywell.dras.services</groupId>
+            <artifactId>soap_client</artifactId>
+            <version>8.9-SNAPSHOT</version>
+        </dependency>
+		
+		
+	  <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+		<dependency>
+		  <groupId>org.apache.httpcomponents</groupId>
+		  <artifactId>httpclient</artifactId>
+		  <version>4.3.5</version>
+		</dependency>
+							
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version><!--$NO-MVN-MAN-VER$-->
+			<scope>test</scope>
+		</dependency>
+	<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.2</version>
+		</dependency>
+		
+			<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss-annotations-ejb3</artifactId>
+			<version>4.2.2.GA</version>
+		</dependency>
+		 <dependency>
+		  <groupId>org.jboss.ejb3</groupId>
+		  <artifactId>jboss-ejb3-ext-api</artifactId>
+		  <scope>provided</scope>
+		  <version>2.0.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.2.0.Final</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.6-Final</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		 <dependency> 
+            <groupId>javax</groupId> 
+            <artifactId>javaee-api</artifactId> 
+            <version>6.0</version> 
+            <scope>provided</scope>
+        </dependency>  
+	
+
+		
+		 <dependency>
+           <groupId>org.jboss.logging</groupId>
+           <artifactId>jboss-logging</artifactId>
+           <version>3.1.1.GA</version>
+           <scope>compile</scope>
+        </dependency>
+        <dependency>
+        <groupId>org.richfaces.ui</groupId>
+        <artifactId>richfaces-components-ui</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.richfaces.core</groupId>
+          <artifactId>richfaces-core-impl</artifactId>
+      </dependency>
+      <dependency>
+	      <groupId>org.omnifaces</groupId>
+	      <artifactId>omnifaces</artifactId>
+	      <version>1.7</version>
+	   </dependency>
+       
+     <dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
+			<version>2.2.8</version>
+	</dependency>
+		
+		<!-- <dependency>
+		    <groupId>org.jboss.spec.javax.xml.bind</groupId>
+		    <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
+		    <version>1.0.0.Final</version>
+		</dependency>	
+		
+		<dependency>
+			<artifactId>jaxb2-basics-runtime</artifactId>
+			<groupId>org.jvnet.jaxb2_commons</groupId>
+			<version>0.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http-jetty</artifactId>
+			<version>${cxf.version}</version>
+			<scope>test</scope>
+		</dependency> -->
+	</dependencies>
+<profiles>
+		<profile>
+			<!--JBOSS_HOME must be set and jboss must be running. -->
+			<!-- To use run: mvn package jboss-as:deploy / mvn jboss-as:undeploy / 
+				mvn package jboss-as:redeploy -->
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin> 
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions> 
+					<execution> 
+						<id>set-build-time</id> 
+						<phase>compile</phase>
+						<configuration> 
+							<target> 
+								<tstamp> 
+									<format property="TSTAMP" pattern="yyyy-MM-dd HH:mm:ss z" /> 
+								</tstamp> 
+								<replaceregexp byline="true"> 
+									<regexp pattern="DRAS_BUILD_TIME" /> 
+									<substitution expression="${TSTAMP}" />
+									
+									<fileset dir="target/classes" includes="*.prop" />
+									
+								</replaceregexp>
+							</target> 
+						</configuration> 
+						<goals> 
+							<goal>run</goal> 
+						</goals> 
+					</execution>
+					<execution> 
+						<id>set-release-number</id> 
+						<phase>compile</phase>
+						<configuration> 
+							<target> 
+								
+								<replaceregexp byline="true"> 
+									<regexp pattern="DRAS_VERSION" /> 
+									<substitution expression="${project.version}" />
+									
+									<fileset dir="target/classes" includes="*.prop" />
+									
+								</replaceregexp>
+							</target> 
+						</configuration> 
+						<goals> 
+							<goal>run</goal> 
+						</goals> 
+					</execution> 
+				</executions> 
+			</plugin> 
+			
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

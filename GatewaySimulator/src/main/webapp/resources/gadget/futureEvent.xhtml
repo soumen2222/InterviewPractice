@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width" default="auto"/>
+		<composite:attribute name="height" default="auto"/>
+		<composite:attribute name="title" default="Upcoming Events"/>
+		<composite:attribute name="rows" default="5"/>
+	</composite:interface>
+	
+	<composite:implementation>
+		<a4j:region>
+		<h:panelGroup id="gd-up-event" display="block">
+		<h:form id="gdupeventform">
+			<a4j:jsFunction name="initUpEventGadget"    action="#{cc.attrs.bean.init}"   execute="@this" render="@form" /> 
+			<a4j:jsFunction name="updateUpEventGadget"  action="#{cc.attrs.bean.update}" execute="@this" render="@form"/>
+			<a4j:commandButton id="clientTestEventInvoker" style="display:none"  render="@none" execute="@this"
+				 onclick="if(gadget.newClientTestEvt) gadget.newClientTestEvt.openNewEventWizard(
+						function(activeImmediate){
+							if(activeImmediate){
+								if(gadget.activeEvt) gadget.activeEvt.refresh();
+								if(gadget.resource) gadget.resource.refresh();
+							}else{
+								updateUpEventGadget();
+							}
+						}
+				 ); return false;"> 
+			</a4j:commandButton>
+			<div class="gadget-wrapper" style="width:#{cc.attrs.width};height:#{cc.attrs.height}">
+			<div class="gadget">
+			<div class="gadget-inner">
+				<div class="gadget-header">
+					<div style="float:left;">
+							<ul class="topmenu" style="display:block">
+								<li class="toproot">
+									<a class="menu" href="#" onclick="return false;" >
+										<span class="gadget-title">
+											<h:outputText value="#{cc.attrs.title}"/> 
+										</span>
+									</a>
+									<ul>
+										<li><a href="#"  onclick="updateUpEventGadget();return false">
+											<img src="#{resource['/images/refresh-widget.png']}"/><span style="margin-right:100px">Refresh</span>
+										</a></li>
+										<li><a href="#"  onclick="
+												document.getElementById('#{rich:clientId('clientTestEventInvoker')}').click(); return false;">
+												<img src="#{resource['/images/add-event.png']}"/>New Client Test Event
+										</a></li>
+									</ul>
+								</li>
+							</ul>	
+						
+					</div>
+					<span style="display:block;float:right"></span>
+				</div>
+				<a4j:status layout="block" 
+					stopStyle="display:none;"
+					onstart="$('#gd-upevent-body').fadeTo(200,0.2);"
+          onstop="$('#gd-upevent-body').fadeTo(100,1);"
+					startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+					<f:facet name="start">
+						<img  id="gd-upevent-status" src="#{resource['/images/ajax-loader.gif']}"/>
+					</f:facet>
+				</a4j:status>
+				
+				<div class="gadget-body" id="gd-upevent-body"> 
+					<h:panelGroup  rendered="#{cc.attrs.bean.inited}"> 
+						<h:panelGroup rendered="#{empty cc.attrs.bean.upcomingEvents}">
+							<span class="empty-content">No Future events scheduled at this time.</span>
+						</h:panelGroup>
+						<rich:dataTable id="eventTbl" var="_event" value="#{cc.attrs.bean.upcomingEvents}"
+								styleClass="hw_datatable"  rowClasses="even, odd" rows="#{cc.attrs.rows}"
+								rendered="#{not empty cc.attrs.bean.upcomingEvents}">
+							<rich:column>
+								<f:facet name="header">Program</f:facet>
+								<h:outputText value="#{_event.program}"/>
+							</rich:column>
+							<rich:column>
+								<f:facet name="header">Event</f:facet>
+								<h:outputText  value="#{_event.eventName}"/>
+							</rich:column>
+								<rich:column>
+								<f:facet name="header">Status</f:facet>
+								<h:outputText  value="#{_event.strEvtStatus}"/>
+							</rich:column>
+							<rich:column>
+								<f:facet name="header">Notify</f:facet>
+								<h:outputText  value="#{_event.notify}">
+									<f:convertDateTime pattern="#{config.noSecondFormat}" timeZone="#{config.timeZone}"/>
+								</h:outputText>
+							</rich:column>
+							<rich:column>
+								<f:facet name="header">Start</f:facet>
+								<h:outputText  value="#{_event.startTime}">
+									<f:convertDateTime pattern="#{config.noSecondFormat}" timeZone="#{config.timeZone}"/>
+								</h:outputText>
+							</rich:column>
+							<rich:column>
+								<f:facet name="header">End</f:facet>
+								<h:outputText value="#{_event.endTime}">
+									<f:convertDateTime pattern="#{config.noSecondFormat}" timeZone="#{config.timeZone}"/>
+								</h:outputText>
+							</rich:column>
+							<rich:column style="text-align: center;">
+								<f:facet name="header">Resources</f:facet>
+								<h:outputText  value="#{_event.resources}"/>
+							</rich:column>
+							<rich:column>
+								<f:facet name="header">Actions</f:facet>
+								<a4j:commandButton styleClass="gd-button" value="Opt Out"
+									onclick="_open_confirmdlg(
+											'Are you sure you want to opt out event #{_event.eventName}',
+											 function(){ document.getElementById('#{rich:clientId('futureEvtOptOutInvoker')}').click();}
+											);
+										return false;
+								"/>	
+								<a4j:commandButton id="futureEvtOptOutInvoker" style="display:none"
+									action="#{cc.attrs.bean.optOutEvent}"  execute="@form" render="@form">
+									<f:param name="eventName" value="#{_event.eventName}"/>
+								</a4j:commandButton>
+							</rich:column>
+						</rich:dataTable>
+						<rich:dataScroller for="eventTbl" maxPages="20" styleClass="hw_dataNav" renderIfSinglePage="false" />
+					</h:panelGroup>
+				</div> <!-- end of body -->
+			</div> <!-- end of inner-->
+			</div> <!-- end of widget-->
+			</div>	<!-- end of wrapper-->
+		</h:form>
+		</h:panelGroup>
+		<script>
+				// init 
+				$(document).ready(function () {
+					//show ajax loader when widget is loading on page load
+				 	$('#gd-upevent-status').parent().show();
+					setTimeout(function(){
+						initUpEventGadget();
+							},300);
+					});
+			</script>
+		</a4j:region>
+	</composite:implementation>
+</html>

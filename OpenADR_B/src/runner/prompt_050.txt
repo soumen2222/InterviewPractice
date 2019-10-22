@@ -1,0 +1,9 @@
+testcases.push.registerparty.ven.N0_5020_TH_VTN_1 #register
+testcases.push.registerparty.ven.N0_5070_TH_VTN_1
+testcases.push.registerparty.ven.N0_5020_TH_VTN_1 #register
+testcases.push.event.vtn.E0_6080_TH_VEN_1
+testcases.push.report.vtn.R0_8190_TH_VEN_1
+testcases.pull.registerparty.ven.N1_0070_TH_VTN_1
+testcases.pull.registerparty.ven.N1_0020_TH_VTN_1 #register
+testcases.pull.event.ven.E1_1080_TH_VTN_1
+testcases.pull.report.ven.R1_3190_TH_VTN_1

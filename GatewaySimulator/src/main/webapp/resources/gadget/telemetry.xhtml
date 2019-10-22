@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width" default="auto"/>
+		<composite:attribute name="height" default="auto"/>
+		<composite:attribute name="title" default="Telemetry"/>
+	</composite:interface>
+
+	<composite:implementation>
+		<a4j:region>
+		<h:panelGroup id="gd-telemetry" display="block">
+		<h:form id="telemetryfrm">
+			<a4j:jsFunction name="initTelemetryGadget"      action="#{cc.attrs.bean.init}"  execute="@this" render="@form" /> 
+			<a4j:jsFunction name="updateTelemetryGadget"    action="#{cc.attrs.bean.update}"  execute="@this" render="@form" /> 
+      <script>
+          function calImageSize(){
+              var height=$('#telemetry-gadget').height()-$('#telemetry-gadget .gadget-header').first().height()-20;
+              $('#gd-img-height').attr('value',height);
+              //120 is reserved for legend 
+              var width =$('#telemetry-gadget').width()-120;
+              $('#gd-img-width').attr('value',width);
+          }
+          function initTelemetry(){
+            calImageSize();
+            initTelemetryGadget();
+          }
+          function updateTelemetry(){
+              calImageSize();
+              updateTelemetryGadget();
+          }
+      </script>
+      <input type="hidden" id="gd-img-width"  name="telemetry-image-width"></input>
+      <input type="hidden" id="gd-img-height" name="telemetry-image-height"></input>
+			<div class="gadget-wrapper" style="width:#{cc.attrs.width};height:#{cc.attrs.height}">
+			<div id="telemetry-gadget" class="gadget">
+			<div class="gadget-inner">
+				<div class="gadget-header">
+					<div style="float:left;">
+						<ul class="topmenu" style="display:block">
+							<li class="toproot">
+								<a class="menu" href="#" onclick="return false;" >
+									<span class="gadget-title"  style="margin-right:1px">
+										<h:outputText value="#{cc.attrs.title}"/> 
+									</span>
+								</a>
+								<ul>
+									<li><a href="#"  onclick="updateTelemetry();return false">
+										<img src="#{resource['/images/refresh-widget.png']}"/><span style="margin-right:33px">Refresh</span>
+									</a></li>
+								</ul>
+							</li>
+						</ul>	
+					</div>
+				</div>
+				<a4j:status layout="block" 
+					stopStyle="display:none;"
+					onstart="$('#gd-telemetry-body').fadeTo(200,0.2);"
+          onstop="$('#gd-telemetry-body').fadeTo(100,1);"
+					startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+					<f:facet name="start">
+						<img  id="gd-telemetry-status" src="#{resource['/images/ajax-loader.gif']}"/>
+					</f:facet>
+				</a4j:status>
+				<div class="gadget-body" id="gd-telemetry-body">
+					<h:panelGroup rendered="#{cc.attrs.bean.inited}">
+					<div class="telemetry-graph" style="position:relative">
+            <div id="telemetry-feedback" class="feedback" style="position:relative;width:0px;height:0px;">
+              <a4j:repeat value="#{cc.attrs.bean.chart.hotZone}" var="hz">
+                <ui:fragment rendered="#{not hz.vertical and not hz.horizontal}">
+                  <div class="hot-zone" style="left:#{hz.x-3}px;top:#{hz.y-3}px;" title="#{hz.labelx},#{hz.labely}"/>
+                </ui:fragment>
+                <ui:fragment rendered="#{hz.vertical}"> 
+                  <div class="vhot-zone" style="left:#{hz.x-1}px;top:0px;height:#{cc.attrs.bean.chart.portHeight}px" title="#{hz.labelx}"/>
+                </ui:fragment>
+              </a4j:repeat>
+            </div>
+            <div class="legend-container" style="position:absolute;right:0;top:0;width:100px">
+               <a4j:repeat value="#{cc.attrs.bean.chart.legend}" var="lg">
+                  <div style="overflow:auto;margin-top:5px">
+                    <div class="legend-icon" style="float:left;width:15px;height:15px;background-color:#{lg.color}"></div>
+                    <span style="float:left;margin-left:5px;">#{lg.label}</span>
+                  </div>
+              </a4j:repeat>
+            </div>
+            <div style="width:#{cc.attrs.bean.chart.width-120}px">
+            <a4j:mediaOutput  id="telemetryImg" 
+                      element="img" cacheable="false" value="#{cc.attrs.bean.chart}"
+                     createContent="#{telemetryPainter.paint}" mimeType="image/jpeg" />
+            </div>
+					</div>
+          <script>
+              $("#telemetry-feedback DIV").hover(
+                function () {
+                      $(this).css('opacity','1');
+                      $(this).css('background-color','#FF8000');
+                },
+                function () {
+                    $(this).css('opacity','0');
+                }
+              );
+          </script>
+					</h:panelGroup>
+				</div>
+			</div>
+			</div>
+			</div>
+		</h:form>
+		</h:panelGroup>
+			<script>
+			// init 
+			$(document).ready(function () {
+				//show ajax loader when widget is loading after page load
+				//timeoue out value determines the order of widget initialization
+				$('#gd-telemetry-status').parent().show();
+				setTimeout(function(){	
+					initTelemetry();
+				},200);
+			});
+			</script>
+		</a4j:region>
+	</composite:implementation>
+</html>

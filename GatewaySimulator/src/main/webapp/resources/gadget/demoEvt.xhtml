@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width" default="600px"/>
+		<composite:attribute name="height"/>
+		<composite:attribute name="dlgId"/>
+	</composite:interface>
+	<composite:implementation>
+		<h:outputScript name="gadget/demoEvent.js"/>
+		<rich:popupPanel id="clientTestEvtCreationWizard" styleClass="hw-dlg demoEvt-dlg" modal="true" 
+					style="padding-bottom:10px" autosized="true"  height="430" width='600'>
+			<f:facet name="header">
+				<h:panelGroup>
+					<img style="height:16px; margin-right:5px" src="#{resource['/images/add-event.png']}"/>
+					<h:outputText styleClass="dlg-title" value="Test Event"/>
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:link value="#" id="newEvtClosdlg" 
+						onclick="gadget.newClientTestEvt.cancel(); return false;"
+						styleClass="hw_buttonIcon hw_buttonClose"/>
+				</h:panelGroup>
+			</f:facet>
+			<a4j:region>
+			<h:form id="devEvtFrm">
+				<a4j:jsFunction name="initDemoEvt"  bypassUpdates="true" immediate="true"
+							action="#{cc.attrs.bean.init}"  execute="@this"  render="@form"/> 
+				<script>
+					var _action_create_evt_successful = (#{cc.attrs.bean.successful}==true);
+				</script>
+				<script>
+					if(!gadget) var gadget = {};
+					if(!gadget.newClientTestEvt){
+						gadget.newClientTestEvt= {
+							openNewEventWizard:function(okHandler,cancelHandler){
+								initDemoEvt();
+								#{rich:component('clientTestEvtCreationWizard')}.show();
+								this.okHandler = okHandler|| function(){};
+								this.cancelHandler=cancelHandler || function(){};
+							},
+							cancel:function(){
+								$('#demoEvt').remove();
+								#{rich:component('clientTestEvtCreationWizard')}.hide();
+							},
+							complete:function(activeImmediate){
+								if(_action_create_evt_successful)
+									this.onSuccess(activeImmediate);
+								else
+									this.onFailure();
+							},
+							onSuccess:function(activeImmediate){
+								$('#demoEvt').remove();
+								#{rich:component('clientTestEvtCreationWizard')}.hide();
+								this.okHandler(activeImmediate);
+							},
+							onFailure:function(){
+								
+							}
+						}
+					}
+				</script>
+				<a4j:status id="demoEvtStatus" layout="block" 
+								onstart="$('#demoEvt').fadeTo(200,0.2);"
+								onstop="$('#demoEvt').fadeTo(100,1);"
+								stopStyle="display:none;"
+								startStyle="z-index:10000;text-align:center;position:absolute;display:block;left:48%;top:46%">
+					<f:facet name="start">
+						<img id="demoEvtStatusStart" src="#{resource['/images/ajax-loader.gif']}"/>
+					</f:facet>
+				</a4j:status>
+				<h:panelGroup layout="block" styleClass="gd_modalBody pDemoEvtDlgBody" rendered="#{cc.attrs.bean.inited}">
+					<div id="demoEvt" class="hw_layoutTable #{cc.attrs.bean.demoEvent.noticeDisabled?'noticeDisable':''} 
+								#{cc.attrs.bean.demoEvent.activeDisabled?'activeDisabled':''}">
+					<span id="pValueApply" style="display:none"><span class="apply-indicator"><a href='#'>
+						<img title='click this button or else where or press enter to apply' style='width:18px;'  
+              src="#{resource['/images/icon-apply.png']}"/></a></span>
+					</span>
+					<span id="pValueLock" style="display:none"><span class="lock-indicator"><a href='#'>
+						<img title='filed is locked' style='width:16px;'  src="#{resource['/images/lock-16.png']}"/></a></span>
+					</span>
+					<span id="pServerTZOffset" style="display:none">#{cc.attrs.bean.timeZoneOffset}</span>
+          <h:panelGroup layout="block">
+            <div class="hw_row">
+              <h:outputText style="font-weight:bold;font-size:0.9em;float:left;" value="Event Timing"></h:outputText>
+              <span style="float:right" id="demoEvtMsg">
+                <span style="float:right" id="demoEvtGlobalMsg" class="rf-msg">
+                  <span class="rf-msg-err"><span class="rf-msg-det">#{cc.attrs.bean.errorMsg}</span></span>
+                </span>
+              </span>
+            </div>
+            <div class="hw_row">
+              <span class="hw-col1">
+                <label for="#{rich:clientId('devEvtFrm')}:pDemoEvtDateInputDate">Event date</label>
+              </span>
+              <span class="hw-col2">
+                <span class="hw-col21">
+                  <rich:calendar id="pDemoEvtDate" showWeeksBar="false" styleClass="evt-date"
+                    value="#{cc.attrs.bean.demoEvent.eventDate}"/>
+                </span>
+              </span>
+            </div>
+          </h:panelGroup>
+					<h:panelGroup layout="block" id="pDemoEvtTiming" styleClass="block-demoevt-timing">
+						<div class="hw_row">
+							<span class="hw-col1">
+							</span>
+							<span class="hw-col2">
+								<span class="hw-col21-col22">
+									<h:outputLabel value="Notification time" for="pDemoEvtNoticeHM"></h:outputLabel>
+								</span>
+								<span class="hw-col23 to-apply input-block">
+									<h:inputText id="pDemoEvtNoticeHM" value="#{cc.attrs.bean.demoEvent.noticeHM}"
+											styleClass="notice-abs noticeImm-impacted dlg-input need-apply absolute-time" 
+											onchange="dv_inputChange(this.id)"
+											disabled="#{cc.attrs.bean.demoEvent.notifyImmediate}">
+										<f:converter converterId="hourMinuteConverter"/>
+									</h:inputText>
+									<span class="hw_validate_msg">
+										<rich:message ajaxRendered="false" for="pDemoEvtNoticeHM"/>
+									</span>
+								</span>
+							</span>
+							<span class="hw-col3">
+								<h:selectBooleanCheckbox id="pDemoEvtNotifyImmediate" styleClass="noticeImm"
+                    disabled="#{cc.attrs.bean.demoEvent.activeImmediate}" 
+										value="#{cc.attrs.bean.demoEvent.notifyImmediate}" onchange="hw_notifyImmediate(this.id)">
+								</h:selectBooleanCheckbox>
+								<h:outputLabel value="Immediate"  for="pDemoEvtNotifyImmediate"></h:outputLabel>
+							</span>
+						</div>
+						<div class="hw_row">
+							<span class="hw-col1">
+								<h:outputLabel value="Near after (min)" for="pDemoEvtNear"></h:outputLabel>
+							</span>
+							<span class="hw-col2">
+								<span class="hw-col21 to-apply input-block">
+									<h:inputText id="pDemoEvtNear"  value="#{cc.attrs.bean.demoEvent.nearM}" 
+										styleClass="near-off near-abs-related noticeImm-impacted dlg-input need-apply offset-time"
+										required="true" requiredMessage="Near offset is required" 
+                    converterMessage="Near offset: Not a valid number" 
+										onchange="dv_inputChange(this.id)"
+										disabled="#{cc.attrs.bean.demoEvent.notifyImmediate}">
+									</h:inputText>
+									<span class="hw_validate_msg">
+										<rich:message ajaxRendered="false" for="pDemoEvtNear" showSummary="false"/>
+									</span>
+								</span>
+								<span class="hw-col22">
+									<h:outputLabel value="Near Time" for="pDemoEvtNearHM"></h:outputLabel>
+								</span>
+								<span class="hw-col23 to-apply input-block">
+									<h:inputText  id="pDemoEvtNearHM" value="#{cc.attrs.bean.demoEvent.nearHM}"
+											 disabled="#{cc.attrs.bean.demoEvent.activeImmediate}" 
+											 onchange="dv_inputChange(this.id);"
+											 styleClass="near-abs near-off-related notice-abs-related notice-abs-related 
+                       activeImm-impacted dlg-input need-apply absolute-time">
+										<f:converter converterId="hourMinuteConverter"/>
+									</h:inputText>
+									<span class="hw_validate_msg">
+										<rich:message ajaxRendered="false" for="pDemoEvtNearHM" showSummary="false"></rich:message>
+									</span>
+								</span>
+							</span>
+						</div>
+						<div class="hw_row">
+							<span class="hw-col1">
+								<h:outputLabel value="Start after notice (min)" for="pDemoEvtNotice"></h:outputLabel>
+							</span>
+							<span class="hw-col2">
+								<span class="hw-col21 to-apply input-block">
+									<h:inputText  id="pDemoEvtNotice" value="#{cc.attrs.bean.demoEvent.noticeM}" 
+										styleClass="notice-off start-abs-related noticeImm-impacted  dlg-input need-apply offset-time" 
+										disabled="#{cc.attrs.bean.demoEvent.activeImmediate}"
+										onchange="dv_inputChange(this.id);"
+										converterMessage="Start time offset: Not a valid number" required="true" 
+                    requiredMessage="Notice offset is required">
+									</h:inputText>
+									<span class="hw_validate_msg">
+										<rich:message ajaxRendered="false" for="pDemoEvtNotice" showSummary="false"></rich:message>
+									</span>
+								</span>
+								<span class="hw-col22">
+									<h:outputLabel value="Start time" for="pDemoEvtStartHM"></h:outputLabel>
+								</span>
+								<span class="hw-col23 to-apply input-block">
+									<h:inputText id="pDemoEvtStartHM" value="#{cc.attrs.bean.demoEvent.startHM}" 
+											disabled="#{cc.attrs.bean.demoEvent.activeImmediate}"
+											onchange="dv_inputChange(this.id);"
+											styleClass="start-abs notice-off-related notice-abs-related 
+                      activeImm-impacted dlg-input need-apply absolute-time">
+										<f:converter converterId="hourMinuteConverter"/>
+									</h:inputText>
+									<span class="hw_validate_msg">
+										<rich:message ajaxRendered="false" for="pDemoEvtStartHM" showSummary="false"/>
+									</span>
+								</span>
+							</span>
+							<span class="hw-col3">
+								<h:selectBooleanCheckbox id="pDemoEvtStartImmediate" styleClass="start-imm"
+									value="#{cc.attrs.bean.demoEvent.activeImmediate}" onchange="hw_startImmediate(this.id)">
+								</h:selectBooleanCheckbox>
+								<h:outputLabel value="Immediate" for="pDemoEvtStartImmediate"></h:outputLabel>
+							</span>
+						</div>
+						<div class="hw_row">
+							<span class="hw-col1">
+								<h:outputLabel value="Event duration (min)" for="pDemoEvtDuration"></h:outputLabel>
+							</span>
+							<span class="hw-col2">
+								<span class="hw-col21 to-apply input-block">
+									<h:inputText  id="pDemoEvtDuration" value="#{cc.attrs.bean.demoEvent.durationM}"
+											styleClass="duration-off end-abs-related dlg-input need-apply offset-time"
+											onchange="dv_inputChange(this.id);"
+											converterMessage="Event duration: Not a valid number" required="true" 
+                      requiredMessage="Event duration is required">
+									</h:inputText>
+									<span class="hw_validate_msg">
+										<rich:message ajaxRendered="false" for="pDemoEvtDuration" showSummary="false"/>
+									</span>
+								</span>
+								<span class="hw-col22">
+									<h:outputLabel value="End time" for="pDemoEvtEndHM"></h:outputLabel>
+								</span>
+								<span class="hw-col23 to-apply input-block">
+									<h:inputText id="pDemoEvtEndHM" value="#{cc.attrs.bean.demoEvent.endHM}" 
+											disabled="#{cc.attrs.bean.demoEvent.activeImmediate}"
+											onchange="dv_inputChange(this.id)"
+											styleClass="end-abs duration-off-related start-abs-related notice-off-related
+                                notice-abs-related	activeImm-impacted dlg-input need-apply absolute-time">
+										<f:converter converterId="hourMinuteConverter"/>
+									</h:inputText>
+									<span class="hw_validate_msg">
+										<rich:message ajaxRendered="false" for="pDemoEvtEndHM" showSummary="false"/>
+									</span>
+								</span>
+							</span>
+							<span class="hw-col3">
+								
+							</span>
+						</div>
+					</h:panelGroup>
+          <div class="hw_row">
+            <h:outputText style="font-weight:bold;font-size:0.9em;float:left; margin-top:5px" value="Event Signals">
+            </h:outputText>
+          </div>
+          <div class="hw_row">
+            <span class="hw-col1">
+              <h:outputLabel value="Test Program" for="pDemoEventSignalType"></h:outputLabel>
+            </span>
+            <span style="text-align:left;float:left">
+              <span class="input-block">
+                <h:selectOneMenu id="pDemoEventSignalType"
+                      styleClass="dlg-input signal-type dlg-input"  onchange="hw_ingoreInvalidFloatSigvalue(this.id)"
+                      value="#{cc.attrs.bean.demoEvent.evtSignal.program}"  style="width:200px;padding:2px 1px">
+                  <f:selectItems value="#{cc.attrs.bean.demoEvent.testProgramTypes}" />
+                  <f:ajax event="change" listener="#{cc.attrs.bean.demoEvent.evtSignal.signalTypeChange}" 
+                    execute="@form " render="@form"/>
+                </h:selectOneMenu>
+                <span class="hw_validate_msg">
+                  <rich:message ajaxRendered="false" for="pDemoEventSignalType" showSummary="false"/>
+                </span>
+              </span>
+              <h:panelGroup rendered="#{empty cc.attrs.bean.demoEvent.testProgramTypes}">
+                <span style="font-size:0.9em;color:red">No Enrolled in any test program</span>
+              </h:panelGroup> 
+            </span>
+          </div>
+          <div class="hw_row">
+            <span class="gr_col_action   gr_title">Action</span>
+            <span class="gr_col_offset   gr_title" title="offset from event stat time">Offset(min)</span>
+            <span class="gr_col_duration gr_title">Duration(min)</span>
+            <span class="gr_col_active   gr_title">Active Time</span>
+            <span class="gr_col_value    gr_title">Signal Value</span>
+          </div>
+          <h:panelGroup id="pSigIntervals" layout="block" styleClass="intervals">
+            <a4j:repeat id="rep"  value="#{cc.attrs.bean.demoEvent.evtSignal.signalIntervals}" var="interval">
+            <h:panelGroup id="intervalRow" layout="block" 
+                class="hw_row #{interval.last? (interval.first? 'row-last row-first':'row-last row-non-first')
+                  :(interval.first?'row-first row-non-last':'row-non-last row-non-first row-middle')}">
+              <span class="gr_col_action gr_cell">
+                <span class="add-container" style="#{interval.addEnabled?'':'display:none'}">
+                  <a href="#" onclick="#{rich:element('facEvtAddInterval')}.click();">
+                    <img  style="width:24px" title="add a signal interval" src="#{resource['/images/add.png']}"/>
+                  </a>
+                  <a4j:commandButton type="button" id="facEvtAddInterval" style="display:none;" 
+                      execute="@form" render="@form"
+                      onclick="if(!hw_demoFormValidate()) return false;"
+                      action="#{cc.attrs.bean.addInterval}" >
+                      <f:param name="offsetId" value="#{interval.offsetId}" />
+                  </a4j:commandButton>
+                </span>
+                <span  class="remove-container" style="#{interval.removalEnabled?'':'display:none'}">
+                  <a href="#" onclick="#{rich:element('facEvtRemoveInterval')}.click();">
+                    <img style="width:24px" title="remove a signal interval"  
+                    src="#{resource['/images/remove-interval.png']}"/>
+                  </a>
+                  <a4j:commandButton type="button" id="facEvtRemoveInterval" style="display:none;" 
+                        action="#{cc.attrs.bean.removeInterval}"
+                        execute="@form" render="@form"
+                        onclick="if(!hw_removalRow(this.id)){return false; }">
+                      <f:param name="offsetId" value="#{interval.offsetId}" />
+                  </a4j:commandButton>
+                </span>
+                <span class="place-holder">&nbsp;</span>
+              </span>
+              <span class="gr_col_offset gr_cell to-apply input-block">
+                <h:inputText  id="pOffset" value="#{interval.offsetM}"
+                  styleClass="interval-off #{interval.index==0?'readOnly':''} dlg-input need-apply offset-time " 
+                  converterMessage="signal interval offset: Not a valid number" 
+                  required="true" requiredMessage="signal interval offset is required"
+                  onchange="dv_inputChange(this.id)"
+                  disabled="#{interval.index==0}">
+                </h:inputText>
+                <span class="hw_validate_msg">
+                  <rich:message ajaxRendered="false" for="pOffset" showSummary="false"/>
+                </span>
+              </span>
+              <span class="gr_col_duration gr_cell #{interval.last?'last-duration':''}">
+                  <h:outputText value="#{interval.durationM}"></h:outputText>
+              </span>
+              <span class="gr_col_active gr_cell to-apply input-block">
+                <h:outputLabel style="display:none" value="Active time"  for="pIntervalHM"></h:outputLabel>
+                <h:inputText id="pIntervalHM" value="#{interval.activeTimeHM}" 
+                    disabled="#{cc.attrs.bean.demoEvent.activeImmediate || interval.index==0}"
+                    styleClass="interval-abs start-abs-related notice-off-related notice-abs-related 
+                      dlg-input need-apply activeImm-impacted absolute-time provides-value #{interval.index==0?'readOnly':''}"
+                    onchange="dv_inputChange(this.id)"
+                    required="true" requiredMessage="signal active time is required">
+                  <f:converter converterId="hourMinuteConverter"/>
+                </h:inputText>
+                <span class="hw_validate_msg">
+                  <rich:message ajaxRendered="false" for="pIntervalHM" showSummary="false"/>
+                </span>
+              </span>
+              <h:panelGroup id="pDemoSigVal" class="gr_col_value gr_cell">
+                <h:panelGroup styleClass="input-block" rendered="#{not cc.attrs.bean.demoEvent.evtSignal.levelSignal}">
+                  <h:outputLabel style="display:none" value="Signal Value" for="pfloatSigVal"></h:outputLabel>
+                  <h:inputText id="pfloatSigVal" styleClass="dlg-input signal-value float-sig-val" value="#{interval.value}" 
+                      style="width:90px;padding:2px 1px"
+                      onchange="dv_inputChange(this.id)"
+                      converterMessage="Signal value: Not a decimal number" required="true"
+                      requiredMessage="signal value is required">
+                    <f:converter converterId="javax.faces.Float"/>
+                  </h:inputText>
+                  <span class="hw_validate_msg">
+                    <rich:message ajaxRendered="false" for="pfloatSigVal" showSummary="false"/>
+                  </span>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{cc.attrs.bean.demoEvent.evtSignal.levelSignal}">
+                  <h:selectOneMenu id="plevelSigVal" styleClass="dlg-input signal-value"
+                        value="#{interval.value}" style="width:90px;padding:2px 1px">
+                    <f:selectItems value="#{cc.attrs.bean.demoEvent.signalLevels}" />
+                  </h:selectOneMenu>
+                </h:panelGroup>
+              </h:panelGroup>
+            </h:panelGroup>
+            </a4j:repeat>
+          </h:panelGroup>
+          <h:panelGroup class="hw_row" rendered="#{not cc.attrs.bean.oneResource}">	
+            <h:outputText style="font-weight:bold;font-size:0.9em;float:left;margin-top:5px" 
+            value="Participanting Resources"></h:outputText>
+          </h:panelGroup>
+          <h:panelGroup layout="block" id="pDemoRes" class="hw_row" rendered="#{not cc.attrs.bean.oneResource}">
+            <table><h:outputText value="&lt;tr&gt;" escape="false"/>
+            <td><span class="res-choice">
+              <h:selectBooleanCheckbox id="pfacDemoEvtResAll" value="#{cc.attrs.bean.allEnrolled}" 
+                onclick="$('.res-checkbox').attr('checked',this.checked);"/>
+              <h:outputLabel value="All"  for="pfacDemoEvtResAll"></h:outputLabel>
+            </span></td>
+            <a4j:repeat value="#{cc.attrs.bean.resources}" var="resp" rowKeyVar="idx">
+              <h:outputText value="&lt;tr&gt;" escape="false" rendered="#{idx%3==2}"/>
+              <td><span class="res-choice">
+                <h:selectBooleanCheckbox styleClass="res-checkbox" id="pRespChoice" value="#{resp.participanting}"/>
+                <h:outputLabel value="#{resp.name}"  for="pRespChoice"></h:outputLabel>
+              </span></td>
+              <h:outputText value="&lt;&#47;tr&gt;" escape="false" rendered="#{idx%3==1}"/>
+            </a4j:repeat>
+            <!-- additional columns in last row are not taken up -->
+            <h:outputText value="&lt;td colspan=&quot;#{2-cc.attrs.bean.resources.size()%3}&quot;&gt;&nbsp;&lt;&#47;td&gt;"
+              escape="false" rendered="#{cc.attrs.bean.resources.size()%3&lt;2}" />
+            <!-- close tr if required-->
+            <h:outputText value="&lt;&#47;tr&gt;" escape="false" rendered="#{cc.attrs.bean.resources.size()%3&lt;2}"/>
+            </table>
+					</h:panelGroup>
+          <div style="position:absolute;bottom:10px;right:20px">
+            <div class="dlg-btns">
+              <a4j:commandButton  type="button" styleClass="gd-button" style="float:right" value="Cancel"
+                onclick="gadget.newClientTestEvt.cancel(); return false;">
+              </a4j:commandButton>
+              <span style="float:right;display:block;margin:5px"/>
+              <a4j:commandButton type="button" styleClass="gd-button"  style="float:right" value="Create"
+                action="#{cc.attrs.bean.createEvent}" 
+                onclick="if(!hw_demoFormValidate()) return false;"
+                oncomplete="gadget.newClientTestEvt.complete($('#demoEvt .start-imm').first().prop('checked'));"
+                execute="@form" render="@form">
+              </a4j:commandButton>
+              <span style="float:right;display:block;margin:5px"/>
+            </div>
+          </div>
+          <script>
+            hw_postload();
+            hw_initValidators('#{rich:clientId("devEvtFrm")}');
+          </script>
+					</div>
+				</h:panelGroup>
+			</h:form>
+			</a4j:region>
+		</rich:popupPanel>	
+	</composite:implementation>
+</html>

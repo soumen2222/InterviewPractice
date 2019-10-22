@@ -1,0 +1,2 @@
+testcases.push.registerparty.ven.N0_5010_TH_VTN_1
+testcases.push.registerparty.ven.N0_5015_TH_VTN_1 #F

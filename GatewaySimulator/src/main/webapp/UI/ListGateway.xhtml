@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+<h:head>
+	<title>Gateway Simulator</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+</h:head>
+<h:body styleClass="hw_page hw_pageParties">
+	<ui:include src="../framework.xhtml" />
+	<div class="hw_pageMainContent">
+		<div class="hw_pageInner">
+		<h:form>
+		<h:panelGroup id="summaryPanelGroup">
+						<div class="hw_searchFilters hw_searchFiltersSm hw_summaryBar clearfix">
+							<h4>Summary</h4>
+							<rich:panel id="summaryTab">
+								<div class="hw_summaryContent">
+									<div class="hw_data"
+										title="There is a total of #{resPageableModel.noOfResources} resources.">
+										<span class="hw_label">Total # Resources</span> <span
+											class="hw_content">#{gatewayViewBean.gatewayData.noOfResources}</span>
+									</div>
+									<div class="hw_data"
+										title="#{resPageableModel.onlinePercentage}% of resources are currently online.">
+										<span class="hw_label">Online</span> <span class="hw_content">#{gatewayViewBean.gatewayData.onlinePercentage}%</span>
+									</div>
+									
+									<div class="hw_data"
+										title="#{resPageableModel.executingPercentage}% of resources are currently executing an event(does not include opted out resources).">
+										<span class="hw_label">Executing</span> <span
+											class="hw_content">#{gatewayViewBean.gatewayData.executingPercentage}%</span>
+									</div>
+									
+								</div>
+							</rich:panel>
+						</div>
+		
+      <rich:dataTable value="#{gatewayViewBean.gatewayData.venData}" var="gateway"
+         styleClass="hw_datatable"   rowClasses="even,odd" id="table" rows="10">
+         
+      
+        <rich:column headerClass="hw_statusSm"	styleClass="hw_statusSm">    				
+            <f:facet name="header">Status</f:facet>
+              
+            <h:outputText value="#{gateway.status}"
+									
+									title="Status: #{gateway.status}" /> 				
+            
+         </rich:column>
+         <rich:column headerClass="hw_statusSm"	styleClass="hw_statusSm">    				
+            <f:facet name="header">Gateway Name</f:facet>
+              
+            <h:outputText value="#{gateway.venName}"
+									title="Name: #{gateway.venName}" /> 				
+            
+         </rich:column>
+        
+         <rich:column headerClass="hw_statusSm"	styleClass="hw_statusSm">    				
+            <f:facet name="header">Event Status</f:facet>
+              
+            <h:outputText value="#{gateway.eventStatus}"
+									 /> 				
+            
+         </rich:column>
+         
+           <rich:column headerClass="hw_statusSm"	styleClass="hw_statusSm">    				
+            <f:facet name="header">Event Signal</f:facet>
+              
+            <h:outputText value="#{gateway.eventSignal}"
+									 /> 				
+            
+         </rich:column>
+         
+         <rich:column headerClass="hw_statusSm"	styleClass="hw_statusSm">    				
+            <f:facet name="header">Event ID</f:facet>
+              
+            <h:outputText value="#{gateway.eventID}"
+									 /> 				
+            
+         </rich:column>
+         
+         <rich:column headerClass="hw_statusSm"	styleClass="hw_statusSm">    				
+            <f:facet name="header">DRAS URL</f:facet>
+              
+            <h:outputText value="#{gateway.DRASVTNUrl}"
+									 /> 				
+            
+         </rich:column>
+         
+         <rich:column headerClass="hw_statusSm"	styleClass="hw_statusSm">    				
+            <f:facet name="header">VENID</f:facet>
+              
+            <h:outputText value="#{gateway.venID}"
+									 /> 				
+            
+         </rich:column>
+         
+         <f:facet name="footer">
+			 <rich:dataScroller for="table" maxPages="50" render = "summaryPanelGroup" />
+							</f:facet>
+      </rich:dataTable>
+      
+      
+      </h:panelGroup>
+   </h:form>
+		</div>
+			
+		</div>
+	
+	<ui:include src="/layout/footer.xhtml" />
+</h:body>
+</html>

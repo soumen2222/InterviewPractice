@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+	<!--
+		This is a confirmation dialog with two buttons- OK & Cancel 
+		- when OK button is clicked, the dialog will be closed and the action will be triggered 
+		- When Cancel button is clicked, the dialog will be closed
+	    How to use this dialog 
+		-include this gadget in jsf page 
+		-call _open_confirmdlg(message,okcallback) before bring up this dialog 
+			@param message - any html text would be shown on the dialog
+			@param okcallback - handler will be trigger when on button is clicked
+			logic when clicked. one practice is to put an hidden a4j:commandButton in the page
+	-->
+	<composite:interface>
+		<composite:attribute name="width" default="300px"/>
+		<composite:attribute name="height"/>
+		<composite:attribute name="message"/>
+		<composite:attribute name="okAction"/>
+		<composite:attribute name="okActionInvokerId"/>
+	</composite:interface>
+
+	<composite:implementation>
+		<script type="text/javascript">
+			function _open_confirmdlg(message,okcallback){
+				document.getElementById('confirmActionInvocationTrigger').onclick=okcallback;
+				document.getElementById('opt-confirm-msg').innerHTML=message;
+				#{rich:component('twoButtonsConfirmDlg')}.show(); 
+			}
+		</script>
+		<rich:popupPanel id="twoButtonsConfirmDlg" styleClass="hw-dlg" modal="true" autosized="true" width='420'>
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText styleClass="dlg-title" value="Confirm Dialog"/>
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:link value="#"
+						onclick="#{rich:component('twoButtonsConfirmDlg')}.hide(); return false;"
+						styleClass="hw_buttonIcon hw_buttonClose"/>
+				</h:panelGroup>
+			</f:facet>
+			<rich:panel id="resourceViewGrid" styleClass="gd_modalBody">
+				<h3 id='opt-confirm-msg' class="confirm-dlg-message"></h3>
+				<div style="position:absolute;bottom:10px;right:10px">
+					<div class="dlg-btns">
+						<a4j:commandButton styleClass="gd-button" style="float:right" onclick="#{rich:component('twoButtonsConfirmDlg')}.hide(); return false;"
+										value="No"/>
+						<span style="float:right;display:block;margin:5px"/>
+						<a4j:commandButton  styleClass="gd-button" style="float:right" value="Yes" 
+							onclick="#{rich:component('twoButtonsConfirmDlg')}.hide(); 
+							document.getElementById('confirmActionInvocationTrigger').click();
+							return false;"
+						/>
+					</div>
+				</div>
+			</rich:panel>
+			<input type="hidden" name="confirmActionInvocationTrigger" id="confirmActionInvocationTrigger"/>
+		</rich:popupPanel>		
+	</composite:implementation>
+</html>

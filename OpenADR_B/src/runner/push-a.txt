@@ -1,0 +1,80 @@
+testcases.push.registerparty.ven.N0_5020_TH_VTN_1 #register
+#
+# VEN
+#
+testcases.push.event.ven.A_E0_0020_TH_VTN_1
+testcases.push.event.ven.A_E0_0040_TH_VTN_1
+testcases.push.event.ven.A_E0_0060_TH_VTN_1
+testcases.push.event.ven.A_E0_0070_TH_VTN_1
+testcases.push.event.ven.A_E0_0082_TH_VTN_1
+testcases.push.event.ven.A_E0_0086_TH_VTN_1
+testcases.push.event.ven.A_E0_0090_TH_VTN_1
+testcases.push.event.ven.A_E0_0092_TH_VTN_1
+testcases.push.event.ven.A_E0_0094_TH_VTN_1
+testcases.push.event.ven.A_E0_0096_TH_VTN
+testcases.push.event.ven.A_E0_0098_TH_VTN_1
+testcases.push.event.ven.A_E0_0100_TH_VTN_1
+testcases.push.event.ven.A_E0_0102_TH_VTN_1
+testcases.push.event.ven.A_E0_0104_TH_VTN_1
+testcases.push.event.ven.A_E0_0110_TH_VTN_1
+testcases.push.event.ven.A_E0_0130_TH_VTN_1
+testcases.push.event.ven.A_E0_0180_TH_VTN_1
+testcases.push.event.ven.A_E0_0185_TH_VTN_1
+testcases.push.event.ven.A_E0_0190_TH_VTN_1
+testcases.push.event.ven.A_E0_0200_TH_VTN_1
+testcases.push.event.ven.A_E0_0210_TH_VTN_1
+testcases.push.event.ven.A_E0_0220_TH_VTN_1
+testcases.push.event.ven.A_E0_0230_TH_VTN
+testcases.push.event.ven.A_E0_0240_TH_VTN_1
+testcases.push.event.ven.A_E0_0250_TH_VTN_1
+testcases.push.event.ven.A_E0_0260_TH_VTN_1
+testcases.push.event.ven.A_E0_0262_TH_VTN_1 # long running test
+testcases.push.event.ven.A_E0_0267_TH_VTN_1 # long running test
+testcases.push.event.ven.A_E0_0268_TH_VTN_1 # long running test
+testcases.push.event.ven.A_E0_0270_TH_VTN_1
+testcases.push.event.ven.A_E0_0280_TH_VTN_1
+testcases.push.event.ven.A_E0_0285_TH_VTN_1
+testcases.push.event.ven.A_E0_0295_TH_VTN_1
+testcases.push.event.ven.A_E0_0300_TH_VTN_1
+testcases.push.event.ven.A_E0_0310_TH_VTN_1
+testcases.push.event.ven.A_E0_0325_TH_VTN_1
+testcases.push.event.ven.A_E0_0340_TH_VTN_1
+testcases.push.event.ven.A_E0_0345_TH_VTN_1
+testcases.push.event.ven.A_E0_0360_TH_VTN_1
+testcases.push.event.ven.A_E0_0370_TH_VTN_1
+testcases.push.event.ven.A_E0_0390_TH_VTN_1
+testcases.push.event.ven.A_E0_0392_TH_VTN_1
+#
+# VTN
+#
+testcases.push.event.vtn.A_E2_0430_TH_VEN_1
+testcases.push.event.vtn.A_E2_0432_TH_VEN_1
+testcases.push.event.vtn.A_E2_0435_TH_VEN_1
+testcases.push.event.vtn.A_E2_0440_TH_VEN_1
+testcases.push.event.vtn.A_E2_0450_TH_VEN_1
+testcases.push.event.vtn.A_E2_0452_TH_VEN_1
+testcases.push.event.vtn.A_E2_0454_TH_VEN_1
+testcases.push.event.vtn.A_E2_0468_TH_VEN_1
+testcases.push.event.vtn.A_E2_0470_TH_VEN_1
+testcases.push.event.vtn.A_E2_0474_TH_VEN_1
+testcases.push.event.vtn.A_E2_0480_TH_VEN_1
+testcases.push.event.vtn.A_E2_0484_TH_VEN_1
+testcases.push.event.vtn.A_E2_0490_TH_VEN_1
+testcases.push.event.vtn.A_E2_0492_TH_VEN_1
+testcases.push.event.vtn.A_E2_0494_TH_VEN_1
+testcases.push.event.vtn.A_E2_0496_TH_VEN_1
+testcases.push.event.vtn.A_E2_0498_TH_VEN_1
+testcases.push.event.vtn.A_E2_0500_TH_VEN_1
+testcases.push.event.vtn.A_E2_0510_TH_VEN_1
+testcases.push.event.vtn.A_E2_0520_TH_VEN_1
+testcases.push.event.vtn.A_E2_0525_TH_VEN_1
+testcases.push.event.vtn.A_E2_0527_TH_VEN_1
+# testcases.push.event.vtn.A_E2_0530_TH_VEN_1 missing A_E2_0530_DUT_VTN
+testcases.push.event.vtn.A_E2_0657_TH_VEN_1
+testcases.push.event.vtn.A_E2_0680_TH_VEN_1
+testcases.push.event.vtn.A_E2_0685_TH_VEN_1 # long running test
+testcases.push.event.vtn.A_E2_0710_TH_VEN_1
+testcases.push.event.vtn.A_E2_0720_TH_VEN_1
+testcases.push.event.vtn.A_E2_0730_TH_VEN_1
+testcases.push.event.vtn.A_E2_0750_TH_VEN_1
+testcases.push.event.vtn.A_E2_0780_TH_VEN_1

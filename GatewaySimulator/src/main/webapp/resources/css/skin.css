@@ -1,0 +1,36 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.DisplayValue { line-height: 1em; }
+html body { background-image: url("http://ecc.alarmnet.com/TrueHomeQA/Images/background_tile_v_t_c.gif?1"); background-repeat: repeat-y; font-size: 0.75em; }
+body #ControlScreen { background-image: url("#{resource['/images/skins/control-bg-DRAS.png']}"); height: 460px; }
+body #ControlScreen.hw_customerUIEmpty { background-image: url("#{resource['/images/skins/control-bg-DRASNoEvent.png']}"); height: 196px; }
+#TempDisplays { height: 196px; }
+.IndoorTemp { left: 50px; }
+#OutdoorDisplay { display: block; }
+.hw_activeProgramWrap { position: absolute; top: 230px; left: 40px; font-size:1.3em; width: 450px; }
+.hw_upcomingWrap { margin: 30px 20px 0; }
+
+#hw_optOut .hw_optOutButton {
+    background-image: url("http://ecc.alarmnet.com/TrueHomeQA/Images/but_menu_small2.png?1");
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    color: #EBEBEB;
+    cursor: pointer;
+    font-size: 15px;
+    height: 37px;
+    line-height: 37px;
+    width: 112px;
+    display: block;
+}
+#hw_optOut  {
+    bottom: 46px;
+    height: 37px;
+    position: absolute;
+    right: 31px;
+    text-align: center;
+    width: 112px;
+    z-index: 5;
+}
+#hw_optOut .hw_optOutButton:hover { background-position: left top; text-decoration: none; }
+.hw_upcomingWrap .hw_datatable { background-color: #ffffff; }

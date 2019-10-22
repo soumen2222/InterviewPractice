@@ -1,0 +1,19 @@
+testcases.push.registerparty.ven.N0_5020_TH_VTN_1 #register
+#
+# VTN
+#
+testcases.push.opt.ven.P0_7010_TH_VTN_1
+testcases.push.opt.ven.P0_7015_TH_VTN_1
+testcases.push.opt.ven.P0_7020_TH_VTN_1
+testcases.push.opt.ven.P0_7030_TH_VTN_1
+testcases.push.opt.ven.P0_7040_TH_VTN_1
+testcases.push.opt.ven.P0_7050_TH_VTN_1
+#
+# VEN
+#
+# testcases.push.opt.vtn.P0_7010_TH_VEN
+# testcases.push.opt.vtn.P0_7015_TH_VEN
+# testcases.push.opt.vtn.P0_7020_TH_VEN
+# testcases.push.opt.vtn.P0_7030_TH_VEN
+# testcases.push.opt.vtn.P0_7040_TH_VEN
+# testcases.push.opt.vtn.P0_7050_TH_VEN

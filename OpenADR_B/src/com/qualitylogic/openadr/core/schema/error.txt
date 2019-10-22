@@ -1,0 +1,8 @@
+parsing a schema...
+[WARNING] schema_reference.4: Failed to read schema document 'oadr_xml.xsd', because 1) could not find the document; 2) the document could not be read; 3) the root element of the document is not <xsd:schema>.
+  line 9 of file:/C:/Users/Enoch/Desktop/OpenADR2.0aCertTest_v1_0_4/src/com/qualitylogic/openadr/core/schema/oadr_atom.xsd
+
+[ERROR] src-resolve: Cannot resolve the name 'xml:base' to a(n) 'attribute declaration' component.
+  line 234 of file:/C:/Users/Enoch/Desktop/OpenADR2.0aCertTest_v1_0_4/src/com/qualitylogic/openadr/core/schema/oadr_atom.xsd
+
+Failed to parse a schema.

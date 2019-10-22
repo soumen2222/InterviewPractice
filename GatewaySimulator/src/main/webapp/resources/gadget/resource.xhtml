@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width" default="auto"/>
+		<composite:attribute name="height" default="auto"/>
+		<composite:attribute name="title"  default="Resources"/>
+		<composite:attribute name="maxRow"   default="4"/>
+	</composite:interface>
+
+	<composite:implementation>
+		<a4j:region>
+			<h:panelGroup id="gd-resource" display="block">
+				<h:form id="fadashClientStsForm">
+					<a4j:jsFunction name="initResourceGadget"     action="#{cc.attrs.bean.init}"   execute="@this" render="@form" /> 
+					<a4j:jsFunction name="updateResourceGadget"   action="#{cc.attrs.bean.update}" execute="@this" render="@form"/> 
+					
+					<script>
+						if(!gadget) gadget={};
+						if(!gadget.resource) {
+							gadget.resource={
+								refresh:function(){
+									$('#resGadgetStatusStart').parent().show();
+									updateResourceGadget();
+								}
+							}
+						}
+						function _open_EvtStatedlg(){
+							#{rich:component('viewResourceStateDlg')}.show(); 
+						}
+					</script>
+					<div class="gadget-wrapper" style="width:#{cc.attrs.width};height:#{cc.attrs.height}">
+						<div class="gadget" id="gd-resource">
+							<div class="gadget-inner">
+								<div class="gadget-header">
+									<div style="float:left;">
+										<ul class="topmenu" style="display:block">
+											<li class="toproot">
+												<a class="menu" href="#" onclick="return false;" >
+													<span class="gadget-title" style="margin-right:1px">
+														<h:outputText value="#{cc.attrs.title}"/> 
+													</span>
+												</a>
+												<ul>
+													<li><a href="#"  onclick="updateResourceGadget();return false;">
+														<img src="#{resource['/images/refresh-widget.png']}"/>Refresh
+													</a></li>
+													<li><a href="#"  onclick="
+														document.getElementById('#{rich:clientId('newResourceDlgInvoker')}').click();
+														return false;">
+														<img src="#{resource['/images/adddevice.png']}"/><span style="margin-right:3px">New Resource</span>
+													</a></li>
+												</ul>
+											</li>
+										</ul>	
+										<a4j:commandButton id="newResourceDlgInvoker" style="display:none" 
+										 onclick="if(gadget.newResource) gadget.newResource.openNewResourceWizard(
+												function(){
+													gadget.resource.refresh();
+													if(gadget.program)  gadget.program.refresh();
+													if(gadget.overview) gadget.overview.refresh();
+												}
+										 );return false;"
+										 render="@none"
+										 execute="@this">
+										</a4j:commandButton>
+									</div>
+								</div>
+								<span style="display:block;float:right">
+								</span>
+								<a4j:status id="resStatus" layout="block" 
+												onstart="$('#gd-resource-body').fadeTo(200,0.2);"
+                        onstop="$('#gd-resource-body').fadeTo(100,1);"
+												stopStyle="display:none;"
+												startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+									<f:facet name="start">
+										<img id="resGadgetStatusStart" src="#{resource['/images/ajax-loader.gif']}"/>
+									</f:facet>
+								</a4j:status>
+								<div id="gd-resource-body" class="gadget-body">
+									<h:panelGroup  rendered="#{cc.attrs.bean.inited}"> 
+										<h:panelGroup rendered="#{empty cc.attrs.bean.clients}">
+											<span class="empty-content">No Resources created.</span>
+										</h:panelGroup>
+										<rich:dataTable id="facdashResTbl" var="_res" value="#{cc.attrs.bean.clients}" 
+												selectionMode="none" sortMode="single" 
+												styleClass="hw_datatable"  rowClasses="even, odd" rows="4"
+												rendered="#{not empty cc.attrs.bean.clients}">
+											<rich:column>
+												<f:facet name="header">Name</f:facet>
+												<h:outputText value="#{_res.name}"/>
+											</rich:column>
+											<rich:column>
+												<f:facet name="header">Event</f:facet>
+												<h:outputText  value="#{_res.eventName}"/>
+											</rich:column>
+											<rich:column>
+												<f:facet name="header">Mode</f:facet>
+												<span>
+													<a4j:commandLink value="#{_res.mode}" 
+															onclick="_open_EvtStatedlg();return false" 
+															execute="@this"  render="viewResourceStateDlg">
+													</a4j:commandLink>
+												</span>
+											</rich:column>
+											<rich:column>
+												<f:facet name="header">Comm Status</f:facet>
+												<h:outputText style="color:#{_res.online?'green':'red'}" value="#{_res.commStatus}"/>
+											</rich:column>
+											<rich:column style="text-align: center;">
+												<f:facet name="header">Last Contact</f:facet>
+												<h:outputText  value="#{_res.lastContact}">
+													<f:convertDateTime pattern="#{config.noSecondFormat}" timeZone="#{config.timeZone}"/>
+												</h:outputText>
+											</rich:column>
+											<rich:column>
+												<f:facet name="header">Actions</f:facet>
+												<h:panelGroup style="white-space:nowrap;">
+												<a4j:commandButton styleClass="gd-button" render="@none" execute="@this" value="edit"
+													onclick="if(gadget.newResource) gadget.newResource.openEditResourceWizard(
+															'#{_res.UUID}',
+															function(){
+																gadget.resource.refresh();
+															}
+														);return false;">
+												</a4j:commandButton>
+												<a4j:commandButton styleClass="gd-button" render="@none" execute="@this" value="options"
+													style="margin-left:5px"
+													onclick="if(gadget.newResource) gadget.newResource.openResourceOptionDlg(
+															'#{_res.UUID}',
+															function(){
+															}
+														);return false;">
+												</a4j:commandButton>
+												</h:panelGroup>
+											</rich:column>
+										</rich:dataTable>
+									</h:panelGroup>
+									<rich:dataScroller for="facdashResTbl"  maxPages="20" styleClass="hw_dataNav" 
+                    renderIfSinglePage="false" 
+                    oncomplete="$('#resGadgetStatusStart').parent().hide();$('#gd-resource-body').fadeTo(100,1);"/>
+								</div> <!-- end of body -->
+							</div> <!-- end of gadget -->
+						</div> <!-- end of inner -->
+					</div>	<!-- end of wrapper -->
+				</h:form>
+			</h:panelGroup>
+			<script>
+			// init 
+			 $(document).ready(function () {
+				//show ajax loader when widget is loading after page load
+				//timeoue out value determines the order of widget initialization
+				$('#resGadgetStatusStart').parent().show();
+				setTimeout(function(){	
+					initResourceGadget();
+				},100);
+			});
+			</script>
+		</a4j:region>
+		
+		<rich:popupPanel id="viewResourceStateDlg" styleClass="hw-dlg" modal="true" autosized="true" width='420'>
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText styleClass="dlg-title" value="Event State"/>
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:link value="#"
+						onclick="#{rich:component('viewResourceStateDlg')}.hide(); return false;"
+						styleClass="hw_buttonIcon hw_buttonClose"/>
+				</h:panelGroup>
+			</f:facet>
+			<a4j:region>
+			<rich:panel id="resourceViewGrid" styleClass="gd_modalBody">
+				<Div>
+				<Span>
+					EVENT STATE goes here ....
+				</Span>
+				</Div>
+				<div style="position:absolute;bottom:10px;right:10px">
+					<div class="dlg-btns">
+						<a4j:commandButton styleClass="gd-button" style="float:right" onclick="#{rich:component('viewResourceStateDlg')}.hide(); return false;"
+										value="Close"/>
+					</div>
+				</div>
+			</rich:panel>
+			<input type="hidden" name="confirmActionInvocationTrigger" id="confirmActionInvocationTrigger"/>
+			</a4j:region>
+		</rich:popupPanel>		
+	</composite:implementation>
+</html>

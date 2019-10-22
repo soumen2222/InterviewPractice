@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+<ui:param name="hw_root" value="#{request.contextPath}" />
+	
+<h:body styleClass="hw_page">
+		<script type="text/javascript" src="#{resources['/js/base.js']}" />
+		<h:outputStylesheet target="head" library="css" name="base.css" />
+		<h:outputStylesheet target="head" library="css" name="style.css" />
+		<h:outputText value="&lt;!--[if IE]&gt;&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;#{resource['/css/ie.css']}&quot; 
+		/&gt;&lt;![endif]--&gt;" escape="false" />
+		
+<div id="header">
+	<h:form>
+	<ui:include src="/layout/header.xhtml" />
+	
+	
+	
+	<div id="mainnav">
+		<ul class="hw_tabMenu cf">			
+			
+			<li class="hw_tabEvents"><a href="#{hw_root}/UI/CreateSimPortal.xhtml" id="mainnav_events">Create Gateway</a></li>
+			<li class="hw_tabEvents"><a href="#{hw_root}/UI/ListGateway.xhtml" id="mainnav_events">List Gateways</a></li>
+		 
+		</ul>
+	</div>
+	</h:form>
+</div>
+</h:body>
+</html>

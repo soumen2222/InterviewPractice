@@ -1,0 +1,19 @@
+testcases.pull.registerparty.ven.N1_0020_TH_VTN_1 #register
+#
+# VTN
+#
+testcases.pull.opt.ven.P1_2010_TH_VTN_1
+testcases.pull.opt.ven.P1_2015_TH_VTN_1
+testcases.pull.opt.ven.P1_2020_TH_VTN_1
+testcases.pull.opt.ven.P1_2030_TH_VTN_1
+testcases.pull.opt.ven.P1_2040_TH_VTN_1
+testcases.pull.opt.ven.P1_2050_TH_VTN_1
+#
+# VEN
+#
+# testcases.pull.opt.vtn.P1_2010_TH_VEN
+# testcases.pull.opt.vtn.P1_2015_TH_VEN
+# testcases.pull.opt.vtn.P1_2020_TH_VEN
+# testcases.pull.opt.vtn.P1_2030_TH_VEN
+# testcases.pull.opt.vtn.P1_2040_TH_VEN
+# testcases.pull.opt.vtn.P1_2050_TH_VEN

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width"             default="auto"/>
+		<composite:attribute name="height"            default="auto"/>
+		<composite:attribute name="title"             default="Active Events"/>
+		<composite:attribute name="showControlClient" default="true"/>
+	</composite:interface>
+
+	<composite:implementation>
+		<a4j:region>
+		<h:panelGroup id="gd-act-event" display="block">
+		<h:form id="facdash_activeEvtFrm">
+			<a4j:jsFunction name="initActiveEventGadget"      action="#{cc.attrs.bean.init}"   execute="@this" render="@form" /> 
+			<a4j:jsFunction name="updateActiveEventGadget"    action="#{cc.attrs.bean.update}"  execute="@this" render="@form" /> 
+			<script>
+				if(!gadget) gadget={};
+				if(!gadget.activeEvt) {
+					gadget.activeEvt={
+						refresh:function(){
+							updateActiveEventGadget();
+						}
+					}
+				}
+				
+				function _open_test_evt_dlg(){
+					if(gadget.newClientTestEvt) gadget.newClientTestEvt.openNewEventWizard(
+						function(activeImmediate){
+							if(activeImmediate){
+								updateActiveEventGadget();
+								if(gadget.resource) gadget.resource.refresh();
+							}else{
+								if(updateUpEventGadget) updateUpEventGadget();
+							}
+						}
+					 )
+				}
+			</script>
+			<div class="gadget-wrapper" style="width:#{cc.attrs.width};height:#{cc.attrs.height}">
+			<div class="gadget">
+			<div class="gadget-inner">
+				<div class="gadget-header">
+					<div style="float:left;">
+						<ul class="topmenu" style="display:block">
+							<li class="toproot">
+								<a class="menu" href="#" onclick="return false;" >
+									<span class="gadget-title">
+										<h:outputText value="#{cc.attrs.title}"/> 
+									</span>
+								</a>
+								<ul>
+									<li><a href="#"  onclick="updateActiveEventGadget();return false">
+										<img src="#{resource['/images/refresh-widget.png']}"/><span style="margin-right:65px">Refresh</span>
+									</a></li>
+									<li><a href="#"  onclick="_open_test_evt_dlg(); return false;">
+											<img src="#{resource['/images/add-event.png']}"/>New Client Test Event 
+									</a></li>
+								</ul>
+							</li>
+						</ul>	
+					</div>
+				</div>
+				<a4j:status layout="block" 
+					stopStyle="display:none;"
+					onstart="$('#gd-actevt-body').fadeTo(200,0.2);"
+          onstop="$('#gd-actevt-body').fadeTo(100,1);"
+					startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+					<f:facet name="start">
+						<img  id="gd-actevt-status" src="#{resource['/images/ajax-loader.gif']}"/>
+					</f:facet>
+				</a4j:status>
+				<div id="gd-actevt-body" class="gadget-body"> 
+					<h:panelGroup rendered="#{cc.attrs.bean.inited}"> 
+						<h:panelGroup rendered="#{empty cc.attrs.bean.activeEvents}">
+								<span class="empty-content">No Active Events at this time.</span>
+						</h:panelGroup>
+						<a4j:repeat value="#{cc.attrs.bean.activeEvents}" var="activeEvt" rendered="#{not empty cc.attrs.bean.activeEvents}">
+							<div class="active-event">
+								<div class="gadget-section" style="height:20px">
+									<div style="width:25%; float:left">
+										<span class="gd-label">Event Name:</span>
+										<span class="gd-content">#{activeEvt.eventName}</span>
+									</div>
+									<div style="width:25%;float:left">
+										<span class="gd-label">Program:</span>
+										<span class="gd-content">#{activeEvt.program}</span>
+									</div>
+									<div style="width:50%;float:left">
+										<span class="gd-label">Resources:</span>
+										<span class="gd-content">#{activeEvt.resources}</span>
+									</div>
+								</div>
+								<div class="gadget-section">
+									<div style="height:25px">
+										<div style="float:left"><span  class="gd-label">Start Time:</span> 
+											<span class="gd-content">
+												<h:outputText value="#{activeEvt.startTime}">
+													<f:convertDateTime type="date" pattern="#{config.hourMinuteFormat}" timeZone="#{config.timeZone}"/>
+												</h:outputText>
+											</span>
+										</div>
+										<div style="float:right"><span class="gd-label">End Time:</span> 
+										<span class="gd-content">
+											<h:outputText value="#{activeEvt.endTime}">
+													<f:convertDateTime type="date" pattern="#{config.hourMinuteFormat}" timeZone="#{config.timeZone}"/>
+											</h:outputText>
+										</span>
+									</div>
+									</div>
+									<div class="meter orange nostripes">
+										<div style="height:100%"><span style="width:#{activeEvt.competetionPercentage};"></span></div>
+									</div>
+									<div style="height:25px; margin-top:5px" >
+										<div style="float:right;margin-left:10px">
+											<a4j:commandButton styleClass="gd-button" value="Opt Out"
+												onclick="_open_confirmdlg(
+														'Are you sure you want to opt out event #{activeEvt.eventName}',
+														function(){
+															document.getElementById('#{rich:clientId('eventOptOutInvoker')}').click();
+														});
+													return false;
+											"/>	
+											<a4j:commandButton id="eventOptOutInvoker" style="display:none"
+													action="#{cc.attrs.bean.optOutEvent}"  execute="@form" render="@form">
+													<f:param name="eventName" value="#{activeEvt.eventName}"/>
+											</a4j:commandButton>
+										</div>
+										<div style="float:right;"><span class="gd-label">Time Remaining:</span><span class="gd-content">#{activeEvt.remaining}</span></div>
+									</div>
+								</div>
+							</div>
+						</a4j:repeat>
+					</h:panelGroup>
+				</div> <!-- end of body-->
+			</div> <!-- end of inner-->
+			</div> <!-- end of widget -->
+			</div>	<!-- end of wrapper-->
+		</h:form>
+		</h:panelGroup>
+		<script>
+			// init 
+			 $(document).ready(function () {
+				//show ajax loader when widget is loading
+				//timeoue out value determines the order of widget initialization
+				$('#gd-actevt-status').parent().show();
+				setTimeout(function(){	
+					initActiveEventGadget();
+				},200);
+			});
+			</script>
+		</a4j:region>
+	</composite:implementation>
+</html>

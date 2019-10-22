@@ -1,0 +1,49 @@
+testcases.pull.registerparty.ven.N1_0020_TH_VTN_1 #register
+#
+# VTN
+#
+testcases.pull.report.ven.R1_3010_TH_VTN_1
+testcases.pull.report.ven.R1_3020_TH_VTN_1
+testcases.pull.report.ven.R1_3025_TH_VTN_1
+testcases.pull.report.ven.R1_3027_TH_VTN_1
+testcases.pull.report.ven.R1_3030_TH_VTN_1
+testcases.pull.report.ven.R1_3040_TH_VTN_1
+testcases.pull.report.ven.R1_3045_TH_VTN_1
+testcases.pull.report.ven.R1_3050_TH_VTN_1
+testcases.pull.report.ven.R1_3060_TH_VTN_1
+testcases.pull.report.ven.R1_3070_TH_VTN_1
+testcases.pull.report.ven.R1_3080_TH_VTN_1
+testcases.pull.report.ven.R1_3090_TH_VTN_1
+testcases.pull.report.ven.R1_3100_TH_VTN_1
+testcases.pull.report.ven.R1_3120_TH_VTN_1
+testcases.pull.report.ven.R1_3130_TH_VTN_1
+testcases.pull.report.ven.R1_3140_TH_VTN_1
+testcases.pull.report.ven.R1_3150_TH_VTN_1
+testcases.pull.report.ven.R1_3160_TH_VTN_1
+testcases.pull.report.ven.R1_3170_TH_VTN_1
+testcases.pull.report.ven.R1_3180_TH_VTN_1
+testcases.pull.report.ven.R1_3190_TH_VTN_1
+#
+# VEN
+#
+# testcases.pull.report.vtn.R1_3010_TH_VEN
+# testcases.pull.report.vtn.R1_3020_TH_VEN
+# testcases.pull.report.vtn.R1_3025_TH_VEN
+# testcases.pull.report.vtn.R1_3027_TH_VEN
+# testcases.pull.report.vtn.R1_3030_TH_VEN
+# testcases.pull.report.vtn.R1_3040_TH_VEN
+# testcases.pull.report.vtn.R1_3045_TH_VEN
+# testcases.pull.report.vtn.R1_3050_TH_VEN
+# testcases.pull.report.vtn.R1_3060_TH_VEN
+# testcases.pull.report.vtn.R1_3070_TH_VEN
+# testcases.pull.report.vtn.R1_3080_TH_VEN
+# testcases.pull.report.vtn.R1_3090_TH_VEN
+# testcases.pull.report.vtn.R1_3100_TH_VEN
+# testcases.pull.report.vtn.R1_3120_TH_VEN
+# testcases.pull.report.vtn.R1_3130_TH_VEN
+# testcases.pull.report.vtn.R1_3140_TH_VEN
+# testcases.pull.report.vtn.R1_3150_TH_VEN
+# testcases.pull.report.vtn.R1_3160_TH_VEN
+# testcases.pull.report.vtn.R1_3170_TH_VEN
+# testcases.pull.report.vtn.R1_3180_TH_VEN
+# testcases.pull.report.vtn.R1_3190_TH_VEN

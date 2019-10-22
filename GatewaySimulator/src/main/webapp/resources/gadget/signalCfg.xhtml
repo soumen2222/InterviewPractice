@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width" default="600px"/>
+		<composite:attribute name="height"/>
+	</composite:interface>
+	<composite:implementation>
+		<rich:popupPanel id="signalConfigDlg" styleClass="hw-dlg demoEvt-dlg" modal="true" 
+					style="padding-bottom:20px" autosized="true"  height="430" width='600'>
+			<f:facet name="header">
+				<h:panelGroup>
+					<img style="height:16px; margin-right:5px" src="#{resource['/images/add-event.png']}"/>
+					<h:outputText styleClass="dlg-title" value="Shed Strategy"/>
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:link value="#" id="newEvtClosdlg" 
+						onclick="gadget.signalConfigDlg.cancel(); return false;"
+						styleClass="hw_buttonIcon hw_buttonClose"/>
+				</h:panelGroup>
+			</f:facet>
+			<a4j:region>
+				<h:form id="sigcfgFrm">
+					<a4j:jsFunction name="initSignalConfig"  bypassUpdates="true" immediate="true" 
+							action="#{cc.attrs.bean.init}"  execute="@this"  render="@form"/> 
+					<input id="gd-programId" type="hidden" name="programId" />
+					<script>
+						var _action_signal_cfg_successful = (#{cc.attrs.bean.successful}==true);
+						if(!gadget) var gadget = {};
+						if(!gadget.signalConfigDlg){
+							gadget.signalConfigDlg= {
+							openConfigDlg:function(programId,okHandler,cancelHandler){
+								document.getElementById('gd-programId').value=programId;
+								initSignalConfig();
+								#{rich:component('signalConfigDlg')}.show();
+								this.okHandler = okHandler|| function(){};
+								this.cancelHandler=cancelHandler || function(){};
+							},
+							cancel:function(){
+								$('#signal-config-body').remove();
+								#{rich:component('signalConfigDlg')}.hide();
+							},
+							complete:function(activeImmediate){
+								if(_action_signal_cfg_successful)
+									this.onSuccess(activeImmediate);
+								else
+									this.onFailure();
+							},
+							onSuccess:function(activeImmediate){
+								$('#signal-config-body').hide();
+								#{rich:component('signalConfigDlg')}.hide();
+								this.okHandler(activeImmediate);
+							},
+							onFailure:function(){
+
+							}
+						}
+					}
+					</script>
+					<a4j:status id="sigcfgStatus" layout="block" 
+								onstart="$('#sigCfg').fadeTo(200,0.2);"
+								onstop="$('#sigCfg').fadeTo(200,0.2);"
+								stopStyle="display:none;"
+								startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+						<f:facet name="start">
+							<img id="sigcfgStatusStart" src="#{resource['/images/ajax-loader.gif']}"/>
+						</f:facet>
+					</a4j:status>
+					<div id="signal-config-body">
+						<rich:panel styleClass="gd_modalBody pDemoEvtDlgBody" rendered="#{cc.attrs.bean.inited}">
+							<div id="sigcfg">
+								<rich:panel styleClass="hw_layoutTable clearfix">
+									<h:panelGroup layout="block">
+										<div class="hw_row">
+											<h:outputText style="font-weight:bold;font-size:0.9em;float:left;" value="Signal Configuration for program #{cc.attrs.bean.programName}"></h:outputText>
+											<span style="float:right" id="signalCfgMsg">
+												<span style="float:right" id="signalCfgGlobalMsg" class="rf-msg">
+													<span class="rf-msg-err"><span class="rf-msg-det">#{cc.attrs.bean.errorMsg}</span></span>
+												</span>
+											</span>
+										</div>
+										<div class="hw_row">
+											<span class="hw_label">
+												<h:outputLabel value="Resource" for="pEditResource"></h:outputLabel>
+											</span>
+											<span class="gr_col_level">
+												<h:selectOneMenu id="pEditResource" value="#{cc.attrs.bean.editResource}" 
+													 styleClass="dlg-input edit-res dlg-input"
+													 style="width:200px;padding:2px 1px">
+													<f:selectItems value="#{cc.attrs.bean.resourceList}" />
+													<f:ajax event="change" listener="#{cc.attrs.bean.editResourceChange}" 
+															execute="@this " render="@form"/>
+												</h:selectOneMenu>
+											</span>
+										</div>
+									</h:panelGroup>
+									<h:panelGroup layout="block" styleClass="block-demoevt-timing">
+										<div class="hw_row">
+											<span class="gr_col_block  gr_title">Time block</span>
+											<span class="gr_col_level  gr_title">Mode Value</span>
+										</div>
+										<h:panelGroup id="pSigIntervals" layout="block" styleClass="intervals">
+											<a4j:repeat id="rep"  value="#{cc.attrs.bean.signalConfig.blocks}" var="block">	
+											<div class="hw_row">
+												<span class="gr_col_block gr_cell">
+													#{block.blockLabel}
+												</span>
+												<span class="gr_col_level gr_cell">
+													<h:selectOneMenu id="pSignalMode" styleClass="dlg-input signal-mode"
+														value="#{block.level}" style="width:90px;padding:2px 1px">
+														<f:selectItems value="#{cc.attrs.bean.signalLevels}" />
+													</h:selectOneMenu>
+												</span>
+											</div>
+											</a4j:repeat>
+										</h:panelGroup>
+									</h:panelGroup>
+								</rich:panel>
+								<div style="position:absolute;bottom:10px;right:20px">
+									<div class="dlg-btns">
+										<a4j:commandButton  type="button" styleClass="gd-button" style="float:right" value="Cancel"
+											onclick="gadget.signalConfigDlg.cancel(); return false;">
+										</a4j:commandButton>
+										<span style="float:right;display:block;margin:5px"/>
+										<a4j:commandButton type="button" styleClass="gd-button"  style="float:right" value="Submit"
+											action="#{cc.attrs.bean.updateConfig}" 
+											oncomplete="gadget.signalConfigDlg.complete();"
+											execute="@form" render="@form">
+										</a4j:commandButton>
+										<span style="float:right;display:block;margin:5px"/>
+									</div>
+								</div>
+							</div>
+						</rich:panel>
+					</div>
+				</h:form>
+			</a4j:region>
+		</rich:popupPanel>	
+	</composite:implementation>
+</html>

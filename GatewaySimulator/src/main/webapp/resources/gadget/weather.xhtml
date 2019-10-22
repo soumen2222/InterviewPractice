@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+  <composite:interface>
+    <composite:attribute name="bean"/>
+    <composite:attribute name="width" default="auto"/>
+    <composite:attribute name="height" default="auto"/>
+    <composite:attribute name="title" default="Weather"/>
+    <composite:attribute name="weather"/>
+  </composite:interface>
+  
+  <composite:implementation>
+    <a4j:region>
+      <h:panelGroup id="weather" display="block">
+        <h:form id="weatherGadgetform">
+          <a4j:jsFunction name="initWeatherGadget"    action="#{cc.attrs.weather.init}"  execute="@this" render="@form" /> 
+          <a4j:jsFunction name="updateWeatherGadget"  action="#{cc.attrs.weather.update}" execute="@this" render="@form"/>
+          <div id="gd-weather-wrapper" class="gadget-wrapper" style="width:#{cc.attrs.width};height:#{cc.attrs.height}">
+            <div class="gadget">
+              <div class="gadget-inner">
+                <div class="gadget-header">
+                  <div style="float:left;">
+                    <ul class="topmenu" style="display:block">
+                      <li class="toproot">
+                        <a class="menu" href="#" onclick="return false;" >
+                          <span class="gadget-title" style="margin-right:10px">
+                            <h:outputText value="#{cc.attrs.title}"/> 
+                          </span>
+                        </a>
+                        <ul>
+                          <li><a href="#"  onclick="updateWeatherGadget();return false">
+                              <img src="#{resource['/images/refresh-widget.png']}"/>Refresh
+                            </a></li>
+                          <li><a href="#"  onclick="openLocationDlg();return false;">
+                              <img src="#{resource['/images/address_edit.png']}"/>Edit Address
+                            </a></li>
+                        </ul>
+                      </li>
+                    </ul>	
+                  </div>
+                </div>
+                <a4j:status layout="block" 
+									stopStyle="display:none;"
+									onstart="$('#weatherWidgetBody').fadeTo(200,0.2);"
+                  onstop="$('#weatherWidgetBody').fadeTo(200,1);"
+									startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+                  <f:facet name="start">
+                    <img  id="weatherGadgetStatusStart" src="#{resource['/images/ajax-loader.gif']}"/>
+                  </f:facet>
+                </a4j:status>
+                <div id="weatherWidgetBody" class="gadget-body" style="clear:both">
+                  <h:panelGroup rendered="#{cc.attrs.weather.inited}"> 
+                    <h:panelGroup rendered="#{empty cc.attrs.weather.zipCode}">
+                      <span class="empty-content">Location not set properly</span>
+                      <span style="margin-left:10px"></span>
+                      <a4j:commandButton id="locationUpdateDlgInvoker" styleClass="gd-button" 
+										execute="@this" render="locationUpdateDlg" 
+										value="Edit Address" onclick="openLocationDlg();return false">
+                      </a4j:commandButton>
+                    </h:panelGroup>
+                    <rich:panel styleClass="hw_blockGroup hw-weather-container clearfix" 
+													rendered="#{not empty cc.attrs.weather.zipCode}">
+                      <div style="float:left">
+                        <div style="text-align:center">
+                          <div>City</div>
+                          <div>#{cc.attrs.weather.city}</div>
+                          <div style="margin-top:10px">Zip Code</div>
+                          <div>#{cc.attrs.weather.zipCode}</div>
+                        </div>
+                      </div>
+                      <div style="float:left; margin-left:15px">
+                        <div><span title="today" >
+                            <span style="font-weight:bold">
+															Today
+                            </span>
+                            <span class="hw-weather-txt"> - #{cc.attrs.weather.todayWeather.description}</span>
+                          </span>
+                        </div>
+                        <div style="overflow:auto">
+                          <div style="overflow:auto">
+                            <div style="float:left;"><img src="#{cc.attrs.weather.todayWeather.icon}"/></div>
+                            <div style="float:left;font-size:50px;position:relative;top:20px;">
+                              <span title="current temperature">#{cc.attrs.weather.todayWeather.currentTemp}<span>&#176;F</span></span>
+                            </div>
+                          </div>
+                          <div><span class="hw-weather-txt">
+                              <span>#{cc.attrs.weather.todayWeather.lowTemp}<span>&#176;F</span>-#{cc.attrs.weather.todayWeather.highTemp}<span>&#176;F</span>
+                                <span style="margin-left:6px">H:</span><span>#{cc.attrs.weather.todayWeather.humidity}</span><span>&#37;</span>
+                              </span>
+                            </span></div>
+                        </div>
+                      </div>
+                      <div style="margin-left:5px;float-left;width:5px"></div>
+                      <a4j:repeat value="#{cc.attrs.weather.weatherFromTomorrow}" var="forecast">
+                        <div class="hw-weather-other">
+                          <div><span>
+                              <h:outputText value="#{forecast.date}">
+                                <f:convertDateTime pattern="#{config.datePattern}" timeZone="#{config.timeZone}"/>
+                              </h:outputText>
+                            </span></div>
+                          <div><img style="width:35px" src="#{forecast.icon}"/></div>
+                          <div><span class="hw-weather-txt">
+                              <span>#{forecast.lowTemp}<span>&#176;F</span>-#{forecast.highTemp}<span>&#176;F</span></span>
+                            </span></div>
+                        </div>
+                      </a4j:repeat>
+                    </rich:panel>
+                  </h:panelGroup>
+                </div>
+              </div>
+            </div>
+          </div>
+        </h:form>
+      </h:panelGroup>
+      <script>
+				// init 
+				$(document).ready(function () {
+					//show ajax loader when widget is loading on page load
+				 	$('#weatherGadgetStatusStart').parent().show();
+					setTimeout(function(){
+							initWeatherGadget();
+					},500);
+					});
+      </script>
+    </a4j:region>
+    <rich:popupPanel id="locationUpdateDlg" styleClass="hw-dlg" modal="true" autosized="true" height="300" width='450'>
+      <f:facet name="header">
+        <h:panelGroup>
+          <img style="height:16px;margin-right:5px" src="#{resource['/images/address_edit.png']}"/>
+          <h:outputText styleClass="dlg-title" value="Edit"/>
+        </h:panelGroup>
+      </f:facet>
+      <f:facet name="controls">
+        <h:panelGroup>
+          <h:link value="#"
+					onclick="cancelLocationUpdate();return false;"
+					styleClass="hw_buttonIcon hw_buttonClose"/>
+        </h:panelGroup>
+      </f:facet>
+      <a4j:region>
+        <h:form id="weatherEditFrm">
+          <a4j:jsFunction name="initLocationDlg" action="#{cc.attrs.weather.initLocationDlg}"  
+                bypassUpdates="true" immediate="true" execute="@this" render="@form"/> 
+          <script>
+               var _action_update_location = (#{cc.attrs.weather.locateUpdated}==true);
+               function openLocationDlg(){
+                  initLocationDlg();
+                  #{rich:component('locationUpdateDlg')}.show();
+               }
+               function cancelLocationUpdate(){
+                  $('#weatherAddressInputs').remove();
+                  #{rich:component('locationUpdateDlg')}.hide();
+               }
+               function updateLocationDone(){
+                  if(_action_update_location){
+                      $('#weatherAddressInputs').remove();
+                      #{rich:component('locationUpdateDlg')}.hide();
+                      updateWeatherGadget();     
+                  }                    
+               }
+          </script>
+          <a4j:status layout="block" 
+            stopStyle="display:none;"
+            onstart="$('#weatherAddressInputs').fadeTo(200,0.2);"
+            onstop="$('#weatherAddressInputs').fadeTo(200,1);"
+            startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+            <f:facet name="start">
+              <img  src="#{resource['/images/ajax-loader.gif']}"/>
+            </f:facet>
+          </a4j:status>
+          <h:panelGroup layout="block" styleClass="gd_modalBody">
+            <div id="weatherAddressInputs">
+              <rich:panel styleClass="hw_layoutTable clearfix" >
+                <div class="hw_row">
+                  <h:panelGroup style="height:30px">
+                    <div style="text-align:left;float:left;">
+                      <span class="wiz-page-title">Edit Address</span>
+                    </div>
+                    <div style="text-align:right;float:right;">
+                      <span class="mandatory-ind">*</span>
+                      <span> denotes a required field</span>
+                    </div>
+                  </h:panelGroup>
+                </div>
+                <div class="hw_row">
+                  <span class="hw_label">
+                    <span class="star-place-holder"></span>
+                    <h:outputLabel value="name" for="pweditName"></h:outputLabel>
+                  </span>
+                  <span class="hw_content">
+                    <h:inputText styleClass="dlg-input readOnly" id="pweditName" value="#{cc.attrs.weather.name}" 
+                      disabled="true"/>
+                  </span>
+                </div>
+                <div class="hw_row">
+                  <span class="hw_label"><span class="mandatory-ind" title="Required Field">*</span>
+                    <h:outputLabel value="City" for="peditcity"></h:outputLabel>
+                  </span>
+                  <span class="hw_content">
+                    <h:inputText styleClass="dlg-input" id="peditcity" value="#{cc.attrs.weather.city}"
+                      required="true" requiredMessage="city is required">
+                    </h:inputText>
+                  </span>
+                  <span class="hw_validate_msg">
+                    <rich:message for="peditcity"  ajaxRendered="false"/>
+                  </span>
+                </div>
+                <div class="hw_row">
+                  <span class="hw_label">
+                    <span class="mandatory-ind" title="Required Field">*</span>
+                    <h:outputLabel value="Zip Code" for="peditZipCode"></h:outputLabel>
+                  </span>
+                  <span class="hw_content">
+                    <h:inputText id="peditZipCode" styleClass="dlg-input" value="#{cc.attrs.weather.zipCode}"
+                      required="true" requiredMessage="Zip Code is required">
+                    </h:inputText>
+                  </span>
+                  <span class="hw_validate_msg">
+                    <rich:message for="peditZipCode" ajaxRendered="false"/>
+                  </span>
+                </div>
+                <div style="position:absolute;bottom:10px;right:10px">
+                  <div class="dlg-btns">
+                    <a4j:commandButton styleClass="gd-button" style="float:right"  type="button" 
+                      onclick="cancelLocationUpdate(); return false;"
+                      value="Cancel"/>
+                    <span style="float:right;display:block;margin:5px"/>
+                    <a4j:commandButton  styleClass="gd-button" style="float:right" value="Ok" 
+                      type="submit" action="#{cc.attrs.weather.updateParty}" 
+                      execute="@form" render="@form"
+                      oncomplete="updateLocationDone();"/>
+                    <span style="float:right;display:block;margin:5px"/>
+                  </div>
+                </div>
+              </rich:panel>
+            </div>
+          </h:panelGroup>
+        </h:form>
+      </a4j:region>
+    </rich:popupPanel>
+  </composite:implementation>
+</html>

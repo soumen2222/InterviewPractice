@@ -1,0 +1,98 @@
+<jxb:bindings version="1.0"
+  xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <jxb:globalBindings> 
+      <jxb:serializable uid="1" /> 
+  </jxb:globalBindings>
+
+  <jxb:bindings schemaLocation="oadr_20b.xsd">
+        <jxb:schemaBindings>
+          <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+        </jxb:schemaBindings>
+      </jxb:bindings>
+
+  <jxb:bindings schemaLocation="oadr_atom.xsd">
+        <jxb:schemaBindings>
+          <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+          
+        </jxb:schemaBindings>
+      </jxb:bindings>
+
+  <jxb:bindings schemaLocation="oadr_ei_20b.xsd">
+        <jxb:schemaBindings>
+          <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+          
+        </jxb:schemaBindings>
+      </jxb:bindings>
+      
+      <jxb:bindings schemaLocation="oadr_emix_20b.xsd">
+              <jxb:schemaBindings>
+                <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+                
+              </jxb:schemaBindings>
+            </jxb:bindings>
+            
+                  <jxb:bindings schemaLocation="oadr_gml_20b.xsd">
+	                  <jxb:schemaBindings>
+	                    <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+	                    
+	                  </jxb:schemaBindings>
+            </jxb:bindings>
+      
+                        <jxb:bindings schemaLocation="oadr_greenbutton.xsd">
+      	                  <jxb:schemaBindings>
+      	                    <jxb:package name="com.qualitylogic.openadr.core.signal.greenbutton"/>
+      	                  </jxb:schemaBindings>
+            </jxb:bindings>
+
+                        <jxb:bindings schemaLocation="oadr_ISO_ISO3AlphaCurrencyCode_20100407.xsd">
+      	                  <jxb:schemaBindings>
+      	                    <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+      	                  </jxb:schemaBindings>
+            </jxb:bindings>
+
+                        <jxb:bindings schemaLocation="oadr_power_20b.xsd">
+      	                  <jxb:schemaBindings>
+      	                    <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+      	                  </jxb:schemaBindings>
+            </jxb:bindings>
+            
+                                    <jxb:bindings schemaLocation="oadr_pyld_20b.xsd">
+	          	                  <jxb:schemaBindings>
+	          	                    <jxb:package name="com.qualitylogic.openadr.core.signal"/>
+	          	                  </jxb:schemaBindings>
+            </jxb:bindings>
+            
+            
+	    <jxb:bindings schemaLocation="oadr_siscale_20b.xsd">
+	    	<jxb:schemaBindings>
+	    	<jxb:package name="com.qualitylogic.openadr.core.signal"/>
+	    	</jxb:schemaBindings>
+            </jxb:bindings>
+            
+            	    <jxb:bindings schemaLocation="oadr_strm_20b.xsd">
+	    	    	<jxb:schemaBindings>
+	    	    	<jxb:package name="com.qualitylogic.openadr.core.signal"/>
+	    	    	</jxb:schemaBindings>
+	                </jxb:bindings>
+            
+                    <jxb:bindings schemaLocation="oadr_xcal_20b.xsd">
+	    	    	    	<jxb:schemaBindings>
+	    	    	    	<jxb:package name="com.qualitylogic.openadr.core.signal.xcal"/>
+	    	    	    	</jxb:schemaBindings>
+	                </jxb:bindings>
+	                
+	            
+
+	                <jxb:bindings schemaLocation="oadr_xmldsig.xsd">
+	    	    	    	<jxb:schemaBindings>
+	    	    	    	<jxb:package name="com.qualitylogic.openadr.core.signal"/>
+	    	    	    	</jxb:schemaBindings>
+	                </jxb:bindings>
+
+	                <jxb:bindings schemaLocation="oadr_xmldsig11.xsd">
+	    	    	    	<jxb:schemaBindings>
+	    	    	    	<jxb:package name="com.qualitylogic.openadr.core.signal"/>
+	    	    	    	</jxb:schemaBindings>
+	                </jxb:bindings>
+  </jxb:bindings>

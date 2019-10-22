@@ -1,0 +1,14 @@
+testcases.pull.registerparty.ven.N1_0020_TH_VTN_1 #register
+#
+# VTN
+#
+testcases.pull.general.ven.G1_4010_TH_VTN_1
+testcases.pull.general.ven.G1_4011_TH_VTN_1
+testcases.pull.general.ven.G1_4015_TH_VTN_1
+#
+# VEN
+#
+#testcases.pull.general.vtn.G1_4010_TH_VEN
+#testcases.pull.general.vtn.G1_4011_TH_VEN
+#testcases.pull.general.vtn.G1_4015_TH_VEN
+testcases.pull.general.vtn.G1_4020_TH_VEN_1

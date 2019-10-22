@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width" default="600px"/>
+		<composite:attribute name="height"/>
+		<composite:attribute name="dlgId"/>
+	</composite:interface>
+	<composite:implementation>
+	<script>
+		if(!gadget) var gadget = {};
+		if(!gadget.contact){
+			gadget.contact= {
+				openfacdashContactDlg:function(okHandler,cancelHandler){
+					initContact();
+					#{rich:component('contactDlg')}.show();
+					this.okHandler = okHandler|| function(){};
+					this.cancelHandler=cancelHandler || function(){};
+				},
+				onComplete:function(){
+						this.onSuccess();
+				},
+				onSuccess:function(){
+          $('#contact').remove();
+					$('.newResWizardBody').hide();
+					#{rich:component('contactDlg')}.hide();
+					this.okHandler();
+				},
+				onFailure:function(){
+
+				},
+				onCancel:function(){
+          $('#contact').remove();
+					$('.newResWizardBody').hide();
+					#{rich:component('contactDlg')}.hide();
+					this.cancelHandler();
+				}
+			}
+		}
+	</script>
+		<rich:popupPanel id="contactDlg" styleClass="hw-dlg" modal="true" autosized="true" width='600' height='400'>
+			<f:facet name="header">
+				<h:panelGroup>
+					<img style="height:16px;margin-right:5px" src="#{resource['/images/contact.png']}"/>
+					<h:outputText styleClass="dlg-title" value="Contacts"/>
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup>
+					<h:link value="#" id="newResClosdlg"
+						onclick="gadget.contact.onCancel();return false;"
+						styleClass="hw_buttonIcon hw_buttonClose"/>
+				</h:panelGroup>
+			</f:facet>
+			<a4j:region>
+			<h:form id="contactFrm">
+				<a4j:jsFunction name="initContact"          action="#{cc.attrs.bean.init}"    execute="@this"  render="@form"/> 
+				<a4j:jsFunction name="updateContact"    action="#{cc.attrs.bean.update}"      execute="@form"  render="@form"/> 
+				<a4j:status  layout="block" 
+								onstart="$('#contact').fadeTo(200,0.2);"
+								onstop="$('#contact').fadeTo(100,1);"
+								stopStyle="display:none;"
+								startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+					<f:facet name="start">
+						<img src="#{resource['/images/ajax-loader.gif']}"/>
+					</f:facet>
+				</a4j:status>
+				<rich:panel id="contactInputs" styleClass="gd_modalBody contactBody" rendered="#{cc.attrs.bean.inited}">
+					<div id="contact">
+					<rich:togglePanel switchType="ajax" id="contactPanels" activeItem="#{cc.attrs.bean.activePageItem}">	
+						<rich:togglePanelItem id="contactListItem">
+							<rich:panel styleClass="hw_layoutTable clearfix">
+								<h:panelGroup rendered="#{empty cc.attrs.bean.contacts}">
+										<span class="empty-content">No contacts created.</span>
+								</h:panelGroup>
+								<h:panelGroup>
+									<div class="hw_row row_header">
+										<span class="gr_title gr_col_name">Name</span>
+										<span class="gr_title gr_col_type">Type</span>
+										<span class="gr_title gr_col_address">Address</span>
+										<span class="gr_title gr_col_onNotify">On/Off Season Notify</span>
+									</div>
+									<div class="hw_row row_header second_header">
+										<span class="gr_title gr_col_action">Action</span>
+										<span class="gr_title gr_col_commsNotify">Comm Notification</span>
+										<span class="gr_title gr_col_eventNotify">Event Notifications</span>
+									</div>
+									<h:panelGroup layout="block">
+										<a4j:repeat id="rep"  value="#{cc.attrs.bean.contacts}" var="_con" rowKeyVar="idx">
+											<div class="#{idx%2==1?'alt':''}">
+											<div class="hw_row row_data first_row_data">
+												<span class="gr_cell gr_col_name"><h:outputText value="#{_con.name}"/></span>
+												<span class="gr_cell gr_col_type"><h:outputText  value="#{_con.notificationChannelLabel}"/></span>
+												<span class="gr_cell gr_col_address"><h:outputText  value="#{_con.address}"/></span>
+												<span class="gr_cell gr_col_onNotify"><h:outputText value="#{_con.onSeasonNotify}/#{_con.offSeasonNotify} hrs"/></span>
+											</div>
+											<div class="hw_row row_data second_row_data">
+												<span class="gr_cell gr_col_action">
+													<div class="dlg-btns">
+														<a4j:commandButton styleClass="gd-button" style="float:right" value="Edit"
+															execute="@this" render="@form" action="#{cc.attrs.bean.goEditContact}">
+															<f:param name="contactId" value="#{_con.address}"/>
+														</a4j:commandButton>
+													</div>
+												</span>
+												<span class="gr_cell gr_col_commsNotify" style="text-align:center">
+													<h:panelGroup rendered="#{_con.commsNotification}">
+														<img style="height:24px;position:relative;top:-5px" src="#{resource['/images/check-mark-3-32.png']}"/>
+													</h:panelGroup>
+													<h:panelGroup rendered="#{!_con.commsNotification}">
+														<img style="height:24px;position:relative;top:-5px" src="#{resource['/images/x-mark-32.png']}"/>
+													</h:panelGroup>
+												</span>
+												<span class="gr_cell gr_col_eventNotify"><h:outputText value="#{_con.eventNotificationLabel}"/></span>
+											</div>
+											</div>
+										</a4j:repeat>
+									</h:panelGroup>
+								</h:panelGroup>
+								<div style="position:absolute;bottom:15px;right:10px">
+									<div class="dlg-btns">
+										<a4j:commandButton styleClass="gd-button" style="float:right" value="Close"
+												onclick="gadget.contact.onCancel(); return false;">
+										</a4j:commandButton>
+										<span style="float:right;display:block;margin:5px"/>
+										<a4j:commandButton styleClass="gd-button"  immediate="true" style="float:right" value="New Contact"
+											action="#{cc.attrs.bean.goCreateContact}" execute="@this" render="@form">
+										</a4j:commandButton>
+									</div>
+								</div>
+							</rich:panel>
+						</rich:togglePanelItem>
+						<rich:togglePanelItem id="contactEditItem">
+							<rich:panel styleClass="hw_layoutTable clearfix">
+								<div class="hw_row">
+									<h:panelGroup style="height:30px">
+										<div style="text-align:left;float:left;">
+											<span class="wiz-page-title">#{cc.attrs.bean.actionLabel}</span>
+										</div>
+										<div style="text-align:right;float:right;">
+											<span class="mandatory-ind">*</span>
+											<span> denotes a required field</span>
+										</div>
+									</h:panelGroup>
+								</div>
+								<div class="hw_row">
+									<span class="hw_label"><span class="mandatory-ind" title="Required Field">*</span>
+										<h:outputLabel value="Type" for="pContactType"></h:outputLabel>
+									</span>
+									<span class="hw_content">
+										<h:selectOneMenu id="pContactType" styleClass="dlg-input" 
+											required="true" requiredMessage="contact type is required"
+												value="#{cc.attrs.bean.currentContact.channel}"  style="width:180px">
+											<f:selectItems value="#{cc.attrs.bean.currentContact.channels}" />
+										</h:selectOneMenu>
+									</span>
+									<span class="hw_validate_msg">
+										<rich:message for="pContactType" ajaxRendered="false"/>
+									</span>
+								</div>
+								<div class="hw_row">
+									<span class="hw_label">
+										<span class="mandatory-ind" title="Required Field">*</span>
+										<h:outputLabel value="Email address" for="pAddress"></h:outputLabel>
+									</span>
+									<span class="hw_content">
+										<h:inputText id="pAddress" value="#{cc.attrs.bean.currentContact.address}"
+											styleClass="dlg-input" 
+											required="true" requiredMessage="email address is required">
+                        <f:validator validatorId="dr.email"/>
+										</h:inputText>						
+									</span>
+									<span class="hw_validate_msg">
+										<rich:message for="pAddress" ajaxRendered="false"/>
+									</span>
+								</div>
+								<div class="hw_row">
+									<span class="hw_label">
+										<span class="mandatory-ind" title="Required Field">*</span>
+										<h:outputLabel value="Name" for="pContactName"></h:outputLabel>
+									</span>
+									<span class="hw_content">
+										<h:inputText id="pContactName" value="#{cc.attrs.bean.currentContact.name}"
+											styleClass="dlg-input"
+											required="true" requiredMessage="name is required">
+										</h:inputText>						
+									</span>
+									<span class="hw_validate_msg">
+										<rich:message for="pContactName" ajaxRendered="false"/>
+									</span>
+								</div>
+								<div class="hw_row">
+									<span class="hw_label">
+										<span class="mandatory-ind" title="Required Field">*</span>
+										<h:outputLabel value="on Season Notify" for="pOnNotify"></h:outputLabel>
+									</span>
+									<span class="hw_content">
+										<h:inputText id="pOnNotify" value="#{cc.attrs.bean.currentContact.onSeasonNotify}"
+											styleClass="dlg-input" style="width:120px"
+                      converterMessage="Not a valid number" 
+											required="true" requiredMessage="on Season Notify is required">
+										</h:inputText>	
+										<span>hours</span>										
+									</span>
+									<span class="hw_validate_msg">
+										<rich:message for="pOnNotify" ajaxRendered="false"/>
+									</span>
+								</div>
+								<div class="hw_row">
+									<span class="hw_label">
+										<span class="mandatory-ind" title="Required Field">*</span>
+										<h:outputLabel value="Off Season Notify" for="pOffNotify"></h:outputLabel>
+									</span>
+									<span class="hw_content">
+										<h:inputText  id="pOffNotify" value="#{cc.attrs.bean.currentContact.offSeasonNotify}"
+											styleClass="dlg-input" style="width:120px"
+                      converterMessage="Not a valid number" 
+											required="true" requiredMessage="on season notify is required">
+										</h:inputText>
+										<span>hours</span>
+									</span>
+									<span class="hw_validate_msg">
+										<rich:message for="pOffNotify" ajaxRendered="false" />
+									</span>
+								</div>
+								<div class="hw_row">
+									<span class="hw_label">
+										&nbsp;
+									</span>
+									<span class="hw_content">
+										<h:selectBooleanCheckbox id="pCommsNotify" 
+											value="#{cc.attrs.bean.currentContact.commsNotification}" styleClass="rowCheckbox hw_offset"/>
+										<h:outputLabel value="Comm Notification" for="pCommsNotify" />
+									</span>
+									<span class="hw_validate_msg">
+										<rich:message for="pCommsNotify"  ajaxRendered="false"/>
+									</span>
+								</div>
+								<div class="hw_row">
+									<span class="hw_label">
+										<span class="mandatory-ind" title="Required Field">*</span>
+										<h:outputLabel value="Event Notifications" for="pEventNotification"></h:outputLabel>
+									</span>
+									<span class="hw_content">
+										<h:selectOneMenu id="pEventNotification" styleClass="dlg-input" 
+											value="#{cc.attrs.bean.currentContact.eventNotification}" required="true" 
+											requiredMessage="Event Notification type is required" 
+											style="width:240px">
+											<f:selectItems value="#{cc.attrs.bean.currentContact.eventNotificationTypes}" />
+										</h:selectOneMenu>
+									</span>
+									<span class="hw_validate_msg">
+										<rich:message for="pEventNotification" ajaxRendered="false" />
+									</span>
+								</div>
+								<div style="position:absolute;bottom:15px;right:10px">
+									<div class="dlg-btns">
+										<a4j:commandButton type="button" styleClass="gd-button" id="newResourceCancel" style="float:right" value="Close"
+												onclick="gadget.contact.onCancel(); return false;">
+										</a4j:commandButton>
+										<span style="float:right;display:block;margin:5px"/>
+										<a4j:commandButton  styleClass="gd-button"  style="float:right" value="Submit"
+											action="#{cc.attrs.bean.createOrUpdate}"
+											render="@form" execute="@form">
+										</a4j:commandButton>
+										<span style="float:right;display:block;margin:5px"/>
+										<a4j:commandButton type="button" id="backBtn" styleClass="gd-button"  style="float:right" value="Back to List View"
+											render="@form" execute="@this" action="#{cc.attrs.bean.backToList}">
+										</a4j:commandButton>
+									</div>
+								</div>
+							</rich:panel>
+						</rich:togglePanelItem>
+					</rich:togglePanel>
+					</div>
+				</rich:panel>
+			</h:form>
+			</a4j:region>
+		</rich:popupPanel>	
+	</composite:implementation>
+</html>

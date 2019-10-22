@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+<h:head>
+	<title>Gateway Simulator</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+</h:head>
+<h:body styleClass="hw_page hw_pageParties">
+	<ui:include src="../framework.xhtml" />
+	<div class="hw_pageMainContent">
+		<div class="hw_pageInner">
+			<h:body bgcolor="white">
+				<f:view>
+					<h:form>
+						<span style="float:right">
+                <rich:messages layout="table" tooltip="false" showDetail="false" showSummary="true" globalOnly="true">
+                </rich:messages>
+              </span>
+             <div>
+							<div class="hw_row">
+								<span class="hw_label"> <span class="mandatory-ind"
+									title="Required Field">*</span> <h:outputLabel
+										value="DRAS VTN URL" for="VTNURL"></h:outputLabel>
+								</span> <span class="hw_content"> <h:inputText id="VTNURL"
+										styleClass="form-input" required="true"
+										requiredMessage="VTN URL is required"
+										value="#{createGatewaySimBean.DRASVTNUrl}">
+									</h:inputText>
+								</span> <span class="hw_validate_msg"> <rich:message
+										for="VTNURL" />
+								</span>
+							</div>
+
+							<div class="hw_row">
+								<span class="hw_label"> <span class="mandatory-ind"
+									title="Required Field">*</span> <h:outputLabel
+										value="DRAS Server URL" for="DRASURL"></h:outputLabel>
+								</span> <span class="hw_content"> <h:inputText id="DRASURL"
+										styleClass="form-input" required="true"
+										requiredMessage="DRAS SErver URL is required"
+										value="#{createGatewaySimBean.DRASServerUrl}">
+									</h:inputText>
+								</span> <span class="hw_validate_msg"> <rich:message
+										for="DRASURL" />
+								</span>
+							</div>
+
+							<div class="hw_row">
+								<span class="hw_label"> <span class="mandatory-ind"
+									title="Required Field">*</span> <h:outputLabel value="Ven Name"
+										for="VenName"></h:outputLabel>
+								</span> <span class="hw_content"> <h:inputText id="VenName"
+										styleClass="form-input" required="true"
+										requiredMessage="Ven Name is required"
+										value="#{createGatewaySimBean.venName}">
+									</h:inputText>
+								</span> <span class="hw_validate_msg"> <rich:message
+										for="VenName" />
+								</span>
+							</div>
+   <div class="hw_row">
+								 <span class="hw_content"> 
+							<h:commandButton action="#{createGatewaySimBean.createVen()}"
+								value="Create Single Gateway" />
+									</span> 
+							</div>
+													
+						</div>
+								
+																			
+						<span class="hw_label">
+						</span>				
+													
+								<div class="hw_row">
+								<span class="hw_label"> <span class="mandatory-ind"
+									title="Required Field">*</span> <h:outputLabel value="Ven Count"
+										for="VenCount"></h:outputLabel>
+								</span> <span class="hw_content"> <h:inputText id="VenCount"
+										styleClass="form-input" required="true"
+										requiredMessage="Ven Number is required"
+										value="#{createGatewaySimBean.numofVens}">
+									</h:inputText>
+								</span> <span class="hw_validate_msg"> <rich:message
+										for="VenCount" />
+								</span>
+							</div>
+							
+							
+								<div class="hw_row">
+								 <span class="hw_content"> 
+								 <h:commandButton action="#{createGatewaySimBean.createMultipleVen()}"
+								value="Create Multiple Gateway" />
+							    <h:outputLabel id = "Message" value="  #{createGatewaySimBean.message}"></h:outputLabel>
+								</span> 
+							</div>
+							
+								
+						
+												
+					</h:form>
+				</f:view>
+			</h:body>
+
+		</div>
+
+	</div>
+	
+
+	<ui:include src="/layout/footer.xhtml" />
+
+</h:body>
+</html>

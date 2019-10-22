@@ -1,0 +1,8 @@
+<?xml version="1.0"?>	
+<smackProviders> 
+	<iqProvider>
+		<elementName>oadrPayload</elementName>
+		<namespace>http://openadr.org/oadr-2.0b/2012/07</namespace>
+		<className>com.qualitylogic.openadr.core.channel.xmpp.XmlIQProvider</className>	
+	</iqProvider>
+</smackProviders>

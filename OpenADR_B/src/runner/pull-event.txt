@@ -1,0 +1,29 @@
+testcases.pull.registerparty.ven.N1_0020_TH_VTN_1 #register
+#
+# VEN
+#
+testcases.pull.event.ven.E1_1010_TH_VTN_1
+testcases.pull.event.ven.E1_1020_TH_VTN_1
+testcases.pull.event.ven.E1_1025_TH_VTN_1
+testcases.pull.event.ven.E1_1027_TH_VTN_1
+testcases.pull.event.ven.E1_1030_TH_VTN_1
+testcases.pull.event.ven.E1_1040_TH_VTN_1
+testcases.pull.event.ven.E1_1050_TH_VTN_1
+testcases.pull.event.ven.E1_1060_TH_VTN_1
+testcases.pull.event.ven.E1_1065_TH_VTN_1
+testcases.pull.event.ven.E1_1070_TH_VTN_1
+testcases.pull.event.ven.E1_1080_TH_VTN_1
+#
+# VTN
+#
+# testcases.pull.event.vtn.E1_1010_TH_VEN
+# testcases.pull.event.vtn.E1_1020_TH_VEN
+# testcases.pull.event.vtn.E1_1025_TH_VEN
+# testcases.pull.event.vtn.E1_1027_TH_VEN
+# testcases.pull.event.vtn.E1_1030_TH_VEN
+# testcases.pull.event.vtn.E1_1040_TH_VEN
+# testcases.pull.event.vtn.E1_1050_TH_VEN
+# testcases.pull.event.vtn.E1_1060_TH_VEN
+# testcases.pull.event.vtn.E1_1065_TH_VEN
+# testcases.pull.event.vtn.E1_1070_TH_VEN
+# testcases.pull.event.vtn.E1_1080_TH_VEN

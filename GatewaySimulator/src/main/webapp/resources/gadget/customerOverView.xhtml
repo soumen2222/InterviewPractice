@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="title"/>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width"                 default="auto"/>
+		<composite:attribute name="height"                default="auto"/>
+		<composite:attribute name="instanceId"            default="custOverview"/>
+		<composite:attribute name="showAccShed"           default="true"/>
+		<composite:attribute name="showTodayShed"         default="true"/>
+		<composite:attribute name="showControlClientSts"  default="true"/>
+		<composite:attribute name="showFeedbackClientSts" default="true"/>
+    <composite:attribute name="customer"/>
+	</composite:interface>
+
+	<composite:implementation>
+		<a4j:region>
+		<h:panelGroup id="gd-customer-status" display="block" >
+			<h:form>
+			<a4j:jsFunction name="initStatusGadget"     action="#{cc.attrs.bean.init}"   execute="@form" render="gd-customer-status"/> 
+			<a4j:jsFunction name="updateStatusGadget"   action="#{cc.attrs.bean.update}" execute="@form" render="gd-customer-status"/>
+			<script>
+				if(!gadget) gadget={};
+				if(!gadget.overview){
+					gadget.overview={
+						refresh:function(){
+							$('#gd-status-status').parent().show();
+							updateStatusGadget();	
+						}
+					}
+				}
+				function openContactsDlg(){
+					if(gadget.contact){
+						gadget.contact.openfacdashContactDlg();
+					}					
+				}
+        
+        function openResetPasswdDlg(){
+          if(gadget.cstResetPasswd){
+              gadget.cstResetPasswd.openResetPasswdDlg();
+          }
+        }
+        
+			</script>	
+			<div class="gadget-wrapper" id="gd-customer-status" style="width:#{cc.attrs.width};height:#{cc.attrs.height}">
+				<div class="gadget">
+				<div class="gadget-inner">
+					<div class="gadget-header" style="display:none">Customer Overview</div>
+					<a4j:status layout="block" 
+						stopStyle="display:none;"
+						onstart="$('#gd-status-body).hide();"
+						startStyle="text-align:center;position:absolute;display:block;">
+						<f:facet name="start">
+							<img  id="gd-status-status" style="height:24px" src="#{resource['/images/ajax-loader.gif']}"/>
+						</f:facet>
+					</a4j:status>
+					<div id="gd-status-body" class="gadget-body" style="margin: 0px;"> 
+						<h:panelGroup rendered="#{cc.attrs.bean.inited}">
+							<div class="overview">
+							<div class="parameters" style="height:25px">
+								<rich:panel styleClass="parameter" style="float:left" rendered="#{cc.attrs.showAccShed}">
+									<span class="gd-icon"><img src="#{resource['/images/power.png']}"/></span>
+									<span class="gd-label">Accumulated Shed:</span>
+									<span class="gd-content">N/A</span>
+									<span class="gd-label">KWH</span>
+								</rich:panel>
+								<rich:panel  styleClass="parameter" style="float:left" rendered="#{cc.attrs.showTodayShed}">
+									<span class="gd-icon"><img  src="#{resource['/images/register-shed.png']}"/></span>
+									<span class="gd-label">Register Shed:</span>
+									<span class="gd-content">#{cc.attrs.bean.registerShedKW}</span>
+									<span class="gd-label">KW</span>
+								</rich:panel>
+								<rich:panel  styleClass="parameter" style="float:left" rendered="#{cc.attrs.showTodayShed}">
+									<span class="gd-icon"><img  src="#{resource['/images/expected-shed.png']}"/></span>
+									<span class="gd-label">Expected Shed:</span>
+									<span class="gd-content">#{cc.attrs.bean.expectedShedKW}</span>
+									<span class="gd-label">KW</span>
+								</rich:panel>
+								<rich:panel  styleClass="parameter" style="float:left" rendered="#{cc.attrs.showControlClientSts}">
+									<span class="gd-icon"><h:graphicImage library="images" name="#{cc.attrs.bean.overviewStsIndicator}"/></span>
+									<span class="gd-content">#{cc.attrs.bean.overViewStatus}</span>
+								</rich:panel>
+								
+								<rich:panel  styleClass="parameter" style="float:left" rendered="#{cc.attrs.showFeedbackClientSts}">
+									<span class="gd-icon"><h:graphicImage library="images" name="#{cc.attrs.bean.meterStsIndicator}"/></span>
+									<span class="gd-content">#{cc.attrs.bean.meterClientStatus}</span>
+								</rich:panel>
+								<!--
+								<rich:panel styleClass="parameter" style="float:left"  rendered="#{cc.attrs.showControlClientSts}">
+									<span class="gd-icon">
+										<h:graphicImage library="images" name="#{cc.attrs.bean.overviewStsIndicator}"/>
+									</span>
+									<a4j:commandLink styleClass="gd-label" id="resourceStsIndicator" value="#{cc.attrs.bean.overViewStatus}"></a4j:commandLink>
+									<rich:tooltip  mode="ajax" showDelay="800" styleClass="bubble"  direction="bottomRight" for="resourceStsIndicator"
+										verticalOffset="0"  horizontalOffset="0"  followMouse="false" layout="block">
+										<f:facet name="defaultContent">
+											<rich:panel>
+												<strong>Wait....</strong>
+											</rich:panel>
+										</f:facet>
+										<div class="t-body">
+											<div class="t-top"></div>
+											<div class="t-middle" >
+												<a4j:repeat value="#{cc.attrs.bean.clients}" var="cs">
+													<div style="height:22px"  class="#{cs.online?'online':'offline'}">
+														<div style="float:left">
+															<span style="color:black"><h:outputText value="#{cs.name}"/></span>
+														</div>
+														<div style="float:right">
+															<h:outputText value="#{cs.online?'online':'offline'}"/> 
+														</div>
+													</div>
+													<div style="height:22px" class="#{cs.online?'online':'offline'}">
+														<div style="float:left">
+															<span style="color:black">Last contact:</span>
+														</div>
+														<div style="float:right">
+															<h:outputText value="#{cs.lastContact}">
+																<f:convertDateTime pattern="#{config.fullTimeFormat}" timeZone="#{config.timeZone}"/>
+															</h:outputText>
+														</div>
+													</div>
+													<div style="border-top:1px solid gray;height:3px"></div>
+												</a4j:repeat>
+											</div>
+											<div class="t-bottom">
+											</div>
+										</div>
+									</rich:tooltip>
+								</rich:panel>
+								<rich:panel  styleClass="parameter" style="float:left" rendered="#{cc.attrs.showFeedbackClientSts}">
+									<span class="gd-icon">
+										<h:graphicImage library="images" name="#{cc.attrs.bean.meterStsIndicator}"/>
+									</span>
+									<a4j:commandLink id="meterIndicator" styleClass="gd-link" value="#{cc.attrs.bean.meterClientStatus}"></a4j:commandLink>
+									<rich:tooltip  mode="ajax" showDelay="800" styleClass="bubble" for="meterIndicator" direction="bottomRight"
+										verticalOffset="0"  horizontalOffset="0"  followMouse="false" layout="block">
+										<f:facet name="defaultContent">
+											<rich:panel>
+												<strong>Wait....</strong>
+											</rich:panel>
+										</f:facet>
+										<div class="t-body">
+											<div class="t-top"></div>
+											<div class="t-middle" >
+												<div style="height:22px"  class="#{cc.attrs.bean.meterOnline?'online':'offline'}">
+													<div style="float:left">
+														<span style="color:black">Meter feedback client</span>
+													</div>
+													<div style="float:right">
+														<h:outputText value="#{cc.attrs.bean.meterOnline?'online':'offline'}"/> 
+													</div>
+												</div>
+												<div style="height:22px" class="#{cc.attrs.bean.meterOnline?'online':'offline'}">
+													<div style="float:left">
+														<span style="color:black">Last contact:</span>
+													</div>
+													<div style="float:right">
+														<h:outputText value="#{cc.attrs.bean.lastMeterContact}">
+															<f:convertDateTime pattern="#{config.fullTimeFormat}" timeZone="#{config.timeZone}"/>
+														</h:outputText>
+													</div>
+												</div>
+												<div style="border-top:1px solid gray;height:3px"></div>
+											</div>
+											<div class="t-bottom">
+											</div>
+										</div>
+									</rich:tooltip>
+								</rich:panel>
+								-->
+								<div class="parameter" style="float:right;margin-right:0px;">
+								<div style="position:relative;z-index:10000">
+									<ul class="topmenu" style="display:block; z-index:10000">
+										<li class="toproot">
+											<a class="menu" href="#" onclick="return false;" >
+												<span class="gadget-title">
+													<span class="gd-icon">
+														<h:graphicImage value="#{resource['/images/settings-1.png']}"/>
+													</span>
+													<span class="gd-content"><h:outputText value="Options"/></span>
+												</span>
+											</a>
+											<ul>
+												<li><a href="#"  onclick="openContactsDlg(); return false;">
+													<img src="#{resource['/images/contact.png']}"/><span style="margin-right:28px">Contacts</span>
+												</a></li>
+                         <ui:fragment rendered="true">
+                          <li><a href="#"  onclick="openResetPasswdDlg();return false;">
+                            <img src="#{resource['/images/password.png']}"/>Reset password
+                          </a></li>
+                        </ui:fragment>
+											</ul>
+										</li>
+									</ul>	
+								</div>
+								</div>
+							</div>
+						</div>
+						</h:panelGroup>
+					</div>
+				</div>	
+			</div>
+			</div>
+		</h:form>
+		</h:panelGroup>
+		<script>
+			// init 
+			$(document).ready(function () {
+			//show ajax loader when widget is loading on page load
+				$('#gd-status-status').parent().show();
+				setTimeout(function(){
+						initStatusGadget();
+				},400);
+			});
+		</script>
+		</a4j:region>
+	</composite:implementation>
+</html>

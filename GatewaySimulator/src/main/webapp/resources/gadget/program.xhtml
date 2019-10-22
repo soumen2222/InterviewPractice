@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+	
+	<composite:interface>
+		<composite:attribute name="bean"/>
+		<composite:attribute name="width"       default="auto"/>
+		<composite:attribute name="height"      default="auto"/>
+		<composite:attribute name="title"       default="Programs"/>
+		<composite:attribute name="showClients" default="true"/>
+		<composite:attribute name="rows"        default ="4"/>
+	</composite:interface>
+	
+	<composite:implementation>
+	<a4j:region>
+		<h:panelGroup display="block"  id="gd-program">
+		<h:form id="facilityProgramFrm">
+			<input type="hidden" name='changeProgram'/>
+			<input type="hidden" name="signProgram"/>
+			<input type="hidden" name="signClient"/>
+			<a4j:jsFunction name="initProgramtGadget"    action="#{cc.attrs.bean.init}"   execute="@this" render="@form"/> 
+			<a4j:jsFunction name="updateProgramGadget"   action="#{cc.attrs.bean.update}" execute="@this" render="@form"/>
+			<a4j:jsFunction name="customerOptProgram"    
+										action="#{cc.attrs.bean.toggleProgramEnrollment}" execute="@form" render="@form"/>
+			<script>
+				if(!gadget) gadget={};
+				if(!gadget.program){
+					gadget.program={
+						refresh:function(){
+							$('#gd-program-status').parent().show();
+							updateProgramGadget();	
+						}
+					}
+				}
+			</script>	
+			<div  id="gd-program-wrapper" class="gadget-wrapper" style="width:#{cc.attrs.width}; height:#{cc.attrs.height}">
+			<div class="gadget" id="gd-program">
+				<div class="gadget-inner">
+					<div class="gadget-header">
+						<div style="float:left;">
+							<ul class="topmenu" style="display:block">
+								<li class="toproot">
+									<a class="menu" href="#" onclick="return false;" >
+										<span class="gadget-title">
+											<h:outputText value="#{cc.attrs.title}"/> 
+										</span>
+									</a>
+									<ul>
+										<li><a href="#"  onclick="updateProgramGadget();return false">
+											<img src="#{resource['/images/refresh-widget.png']}"/><span style="margin-right:32px">Refresh</span>
+										</a></li>
+									</ul>
+								</li>
+							</ul>	
+						</div>
+					</div>
+					<a4j:status layout="block" 
+						id="gd-program-status"
+						stopStyle="display:none;"
+						onstart="$('#gd-program-body').hide();"
+						startStyle="text-align:center;position:absolute;display:block;left:48%;top:46%">
+						<f:facet name="start">
+							<img  id="gd-program-status" src="#{resource['/images/ajax-loader.gif']}"/>
+						</f:facet>
+					</a4j:status>
+					<div id="gd-program-body" class="gadget-body"> 
+						<h:panelGroup rendered="#{cc.attrs.bean.inited}">
+							<h:panelGroup rendered="#{empty cc.attrs.bean.programs}">
+								<span class="empty-content">Not enrolled by any program</span>
+							</h:panelGroup>
+							<rich:dataTable id="progTable" var="prog"  
+								value="#{cc.attrs.bean.programs}" selectionMode="none" sortMode="single" 
+								styleClass="hw_datatable"  rowClasses="even, odd" rows="#{cc.attrs.rows}"
+								rendered="#{not empty cc.attrs.bean.programs}">
+								<rich:column sortBy="#{prog.name}">
+									<f:facet name="header">Program</f:facet>
+									<h:outputText value="#{prog.name}" title="#{prog.description}"/>
+								</rich:column>
+								<rich:column rendenered="#{cc.attrs.showClients}" sortBy="#{prog.name}">
+									<f:facet name="header">Description</f:facet>
+									<h:outputText value="#{prog.description}"/>
+								</rich:column>
+								<rich:column sortBy="#{prog.optout}">
+									<f:facet name="header">Participanting</f:facet>
+									<h:panelGroup>	
+                    <div>
+                    	<a href="#"  onclick="#{rich:element('facilityProgramFrm')}.elements['changeProgram'].value='#{prog.name}';
+												_open_confirmdlg(
+													'#{prog.optout?'Are you sure you want to participant in program':'Are you sure you want to not participant in program'}' + ' #{prog.name}?',
+													function(){
+														customerOptProgram();
+													}
+												);
+												return false;"
+                        >
+                        <ui:fragment rendered="#{prog.optout}">
+                          <img src="#{resource['/images/switch-off.png']}"/>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{not prog.optout}">
+                          <img src="#{resource['/images/switch-on.png']}"/>
+                        </ui:fragment>
+                      </a>
+                    </div>
+									</h:panelGroup>	
+								</rich:column>
+								<rich:column>
+									<f:facet name="header">Actions</f:facet>
+									<h:panelGroup style="white-space:nowrap;">
+									<a4j:commandButton styleClass="gd-button" render="@none" execute="@this" value="Shed Strategy"
+										onclick="if(gadget.signalConfigDlg) gadget.signalConfigDlg.openConfigDlg(
+												'#{prog.name}',
+												function(){
+													
+												}
+											);return false;">
+									</a4j:commandButton>
+									</h:panelGroup>
+								</rich:column>
+							</rich:dataTable>
+							<rich:dataScroller status="gd-program-status" for="progTable" maxPages="20" styleClass="hw_dataNav" renderIfSinglePage="false" />
+						</h:panelGroup>
+					</div> <!-- end of body-->
+				</div> <!-- inner-->
+			</div> <!-- gadget-->
+			</div> <!-- wrapper-->
+		</h:form>
+		</h:panelGroup>
+		<script>
+		 // init 
+		  $(document).ready(function () {
+			//show ajax loader when widget is loading on page load
+			$('#gd-program-status').parent().show();
+			setTimeout(function(){
+					initProgramtGadget();
+			},300);
+			});
+		</script>
+	</a4j:region>
+	</composite:implementation>
+</html>
